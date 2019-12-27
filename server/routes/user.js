@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // get user data
-router.get("/current-user", (req, res) => {
+router.get("/current", (req, res) => {
   console.log("users");
   res.send("nice");
 });
