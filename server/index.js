@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-
+const keys = require('./config/keys');
 const app = express();
 
 app.use(morgan('combined'));
@@ -16,7 +16,7 @@ app.use(bodyParser.json({
 app.use(cors());
 app.use(require('./routes'))
 
-/*
+
 mongoose.connect(keys.mongoURI, {
     useNewUrlParser: true,
     useFindAndModify: true,
@@ -30,7 +30,7 @@ mongoose.connect(keys.mongoURI, {
     console.error("error connecting to mongo");
     console.error(err);
 })
-*/
+
 
 const PORT = process.env.PORT || 5000;
 const environment = process.env.NODE_ENV || 'dev'
