@@ -91,14 +91,14 @@ export default {
         };
     },
     methods: {
+        // get dropdown tags based on current user input
         getFilteredClasses(text) {
             this.filteredClasses = data.filter(option => {
-                console.log(option);
                 return option.toLowerCase().indexOf(text.toLowerCase()) >= 0;
             });
         },
         createAccount() {
-            console.log(this.firstName, this.lastName);
+            // check if the inputs are valid
             this.validateEmail();
             this.validateName();
             if (
@@ -106,9 +106,10 @@ export default {
                 this.lastNameStatus == 'is-danger' ||
                 this.emailStatus == 'is-danger'
             ) {
-                // wrong
+                // one of the fields is incorrect, don't continue
                 return;
             }
+            // create user object
             const user = {
                 email: this.email,
                 password: this.password,
@@ -117,11 +118,21 @@ export default {
                 classes: this.classes
             };
             console.log(user);
+            // signup
             authService
                 .signup(user)
                 .then(res => {
                     console.log('mesage after signup', res.data.message);
-                    // redirect
+                    if (res.data.message == 'Email already is being used') {
+                        // show an error on the label
+                    } else if (res.data.message == 'Error saving user') {
+                        // an error hapened on our backend
+                    } else {
+                        // sign up went well, user needs to verify the email
+                        // res.data.message == "User signed up"
+                        // indicate to the user that they need to verify their account
+                        // redirect
+                    }
                 })
                 .catch(err => {
                     console.log('there was anerr', err);

@@ -34,7 +34,7 @@ passport.use("local-login", new LocalStrategy({
         if (!user.validPassword(password, hash)) {
             return done(null, false, {message: "Incorrect password"});
         }
-        return done(null, user, {message: "Logged in."})
+        return done(null, user, {message: "Logged in"})
     })
 }))
 
@@ -53,7 +53,7 @@ passport.use(
       User.findOne({ email: email }, (err, user) => {
         if (err) return done(err);
         if (user) {
-          return done(null, false, { message: "Email alrady is being used." });
+          return done(null, false, { message: "Email already is being used" });
         } else {
           // check if email is edu
 
