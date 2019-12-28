@@ -41,7 +41,7 @@ passport.use(
                 // generate token
                 const buf = crypto.randomBytes(256);
           // send verification email
-
+            const htmlContent = `<a href="localhost:3000/${buf}">click here to verify </a>`
 
           const request = mailjet.post("send", { version: "v3.1" }).request({
             Messages: [
@@ -57,9 +57,8 @@ passport.use(
                   }
                 ],
                 Subject: "Please Verify",
-                TextPart: "Hello",
-                HTMLPart:
-                  "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
+                TextPart: buf,
+                HTMLPart: htmlContent,
                 CustomID: "nice"
               }
             ]
@@ -79,7 +78,7 @@ passport.use(
           newUser.classes = [];
           newUser.email = email;
           newUser.isVerified = false;
-          newUser.createAccountToken = "";
+          newUser.createAccountToken = buf;
           newUser.createAccountExpires = "";
           newUser.resetPasswordToken = "";
           newUser.resetPasswordExpires = "";
