@@ -3,10 +3,11 @@ const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
+  email: String,
+  password: String,
   firstName: String,
   lastName: String,
   classes: Array,
-  email: Array,
   isVerified: Boolean,
   createAccountToken: String,
   createAccountExpires: String,
