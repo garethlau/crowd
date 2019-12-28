@@ -1,15 +1,167 @@
 <template>
-  <div>
-    <h1>Signup Form</h1>
-  </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <section>
+                    <b-field
+                        label="First Name"
+                        :type="firstNameStatus"
+                        :message="firstNameMessage"
+                    >
+                        <b-input v-model="firstName"></b-input>
+                    </b-field>
+                    <b-field
+                        label="Last Name"
+                        :type="lastNameStatus"
+                        :message="lastNameMessage"
+                    >
+                        <b-input v-model="lastName"></b-input>
+                    </b-field>
+                    <b-field label="Email" :type="emailStatus">
+                        <b-input v-model="email"></b-input>
+                    </b-field>
+                    <b-field label="Password">
+                        <b-input
+                            type="password"
+                            v-model="password"
+                            password-reveal
+                        >
+                        </b-input>
+                    </b-field>
+                </section>
+                <section>
+                    <b-field label="Enter some tags">
+                        <b-taginput
+                            v-model="classes"
+                            :data="filteredClasses"
+                            autocomplete
+                            :allow-new="allowNew"
+                            :open-on-focus="openOnFocus"
+                            field="user.first_name"
+                            icon="label"
+                            placeholder="Add a tag"
+                            @typing="getFilteredClasses"
+                        >
+                            <template slot-scope="props">
+                                {{ props.option }}
+                            </template>
+                            <template slot="empty">
+                                There are no items
+                            </template>
+                        </b-taginput>
+                    </b-field>
+                </section>
+                <div class="buttons">
+                    <b-button
+                        type="is-primary"
+                        expanded
+                        v-on:click="createAccount"
+                        >Create Account</b-button
+                    >
+                </div>
+            </div>
+            <div class="column">
+                <h1>img</h1>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
+import AuthService from '../services/AuthService';
+const authService = new AuthService();
 export default {
-  name: "SignupRoute",
-  components: {},
-  data() {
-    return {};
-  }
+    name: 'SignupRoute',
+    components: {},
+    data() {
+        return {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            classes: [],
+            filteredClasses: [],
+            firstNameStatus: '',
+            lastNameStatus: '',
+            emailStatus: '',
+            passwordIsValid: false,
+            firstNameMessage: '',
+            lastNameMessage: ''
+        };
+    },
+    methods: {
+        getFilteredClasses(text) {
+            this.filteredClasses = data.filter(option => {
+                console.log(option);
+                return option.toLowerCase().indexOf(text.toLowerCase()) >= 0;
+            });
+        },
+        createAccount() {
+            console.log(this.firstName, this.lastName);
+            this.validateEmail();
+            this.validateName();
+            if (
+                this.firstNameStatus == 'is-danger' ||
+                this.lastNameStatus == 'is-danger' ||
+                this.emailStatus == 'is-danger'
+            ) {
+                // wrong
+                return;
+            }
+            const user = {
+                email: this.email,
+                password: this.password,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                classes: this.classes
+            };
+            console.log(user);
+            authService
+                .signup(user)
+                .then(res => {
+                    console.log('mesage after signup', res.data.message);
+                    // redirect
+                })
+                .catch(err => {
+                    console.log('there was anerr', err);
+                    // flash warning
+                });
+        },
+        validateEmail() {
+            if (this.email.length == 0 || this.email.indexOf('@') < 0) {
+                this.emailStatus = 'is-danger';
+            } else {
+                this.emailStatus = 'is-success';
+            }
+        },
+        validateName() {
+            // validate first name
+            if (this.firstName.length == 0) {
+                this.firstNameMessage = 'Cannot be blank';
+                this.firstNameStatus = 'is-danger';
+            } else if (!/^[a-zA-Z]*$/g.test(this.firstName)) {
+                this.firstNameMessage = 'Only include characters';
+                this.firstNameStatus = 'is-danger';
+            } else {
+                this.firstNameMessage = '';
+                this.firstNameStatus = 'is-success';
+            }
+
+            // validate last name
+            if (this.lastName.length == 0) {
+                this.lastNameMessage = 'Cannot be blank';
+                this.lastNameStatus = 'is-danger';
+            } else if (!/^[a-zA-Z]*$/g.test(this.lastName)) {
+                this.lastNameMessage = 'Only include characters';
+                this.lastNameStatus = 'is-danger';
+            } else {
+                this.lastNameMessage = '';
+                this.lastNameStatus = 'is-success';
+            }
+        }
+    }
 };
 </script>
+
+<style lang="scss"></style>
