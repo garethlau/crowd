@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import HelloWorld from "@/components/HelloWorld";
-import Foo from "@/components/Foo";
+import ContentMainPage from "@/components/ContentMainPage"
 
 Vue.use(Router);
 
@@ -12,10 +12,10 @@ export default new Router({
       name: "Hello",
       component: HelloWorld
     },
-    {
-      path: "/foo",
-      name: "Foo",
-      component: Foo
-    }
+		{
+			path: "/content",
+			name: "ContentMainPage",
+			component: ContentMainPage
+		}
   ]
 });
