@@ -70,7 +70,10 @@
 <script>
 const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
 import AuthService from '../services/AuthService';
+import {store} from '../store';
 const authService = new AuthService();
+
+
 export default {
     name: 'SignupRoute',
     components: {},
@@ -136,6 +139,9 @@ export default {
                         this.success(
                             'Account created. Please verify your email.'
                         );
+                        // set the global user
+                        console.log("signup user!!!", res.data.user)
+                        store.setUser(res.data.user);
                         // redirect
                         setTimeout(() => {
                             this.$router.push('/');

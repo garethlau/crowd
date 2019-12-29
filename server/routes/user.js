@@ -24,7 +24,7 @@ router.post("/login", (req, res, next) => {
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
-				res.send({ message: info.message });
+				res.send({ user: user, message: info.message });
 			});
 		}
 	})(req, res, next);
@@ -32,8 +32,8 @@ router.post("/login", (req, res, next) => {
 
 // logout
 router.get("/logout", (req, res) => {
-	req.logout();   // passport session handles logout
-    req.session.destroy();  // destroy the session
+	req.logout(); // passport session handles logout
+	req.session.destroy(); // destroy the session
 	res.send("Logged out.");
 });
 
@@ -51,7 +51,8 @@ router.post("/signup", (req, res, next) => {
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
-				res.send({ message: info.message });
+				console.log("user after login in signup", user);
+				res.send({ user: user, message: info.message });
 			});
 		}
 	})(req, res, next);

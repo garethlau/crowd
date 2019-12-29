@@ -107,7 +107,7 @@ passport.use(
             .save()
             .then(savedUser => {
               console.log("Saved user", savedUser);
-              return done(null, user, { message: "User signed up." });
+              return done(null, savedUser, { message: "User signed up." });
             })
             .catch(err => {
               console.log("error saving user.");

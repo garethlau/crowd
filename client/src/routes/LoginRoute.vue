@@ -32,6 +32,7 @@
 <script>
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
+import { store } from '../store';
 
 export default {
     name: 'LoginRoute',
@@ -42,7 +43,8 @@ export default {
             emailMessage: '',
             password: '',
             passwordStatus: '',
-            passwordMessage: ''
+            passwordMessage: '',
+            storeState: store.state
         };
     },
     methods: {
@@ -62,6 +64,7 @@ export default {
                     } else {
                         // res.data.message = "Logged in."
                         this.success(res.data.message);
+                        store.setUser(res.data.user);
                         setTimeout(() => {
                             this.$router.push('/');
                         }, 1000);
