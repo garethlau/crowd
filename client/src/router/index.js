@@ -5,6 +5,8 @@ import HelloWorld from '@/components/HelloWorld';
 import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
+import ContentRoute from '@/routes/ContentRoute';
+import CreateResourceRoute from '@/routes/CreateResourceRoute';
 
 Vue.use(Router);
 
@@ -29,6 +31,17 @@ export default new Router({
           path: '/login',
           name: 'Login',
           component: LoginRoute
-        }
+        },
+			{
+				path: '/content',
+				name: 'Content',
+				component: ContentRoute
+			},
+			{
+				path: '/content/create',
+				name: "Create Resource",
+				component: CreateResourceRoute
+			}
+
     ]
 });
