@@ -112,9 +112,10 @@ export default {
                 // one of the fields is incorrect, don't continue
                 return;
             }
+            let email = this.email.toLowerCase();
             // create user object
             const user = {
-                email: this.email,
+                email: email,
                 password: this.password,
                 firstName: this.firstName,
                 lastName: this.lastName,

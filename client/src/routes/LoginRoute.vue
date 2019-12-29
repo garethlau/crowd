@@ -49,9 +49,10 @@ export default {
     },
     methods: {
         login() {
-            console.log(this.email, this.password);
+            let email = this.email.toLowerCase()
+            console.log(email, this.password);
             const data = {
-                email: this.email,
+                email: email,
                 password: this.password
             };
             authService
