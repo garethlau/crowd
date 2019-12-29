@@ -37,32 +37,30 @@ export default {
                     // check if verification was successful
                     if (res.data.message == 'User verified.') {
                         // indicate to the user that their account has been verified
-                        this.success(res.data.message);
+                        this.toast(res.data.message, 'is-success', 2000);
                         // redirect back to the main page
                         setTimeout(() => {
                             this.$router.push('/');
                         }, 3000);
                     } else {
-                        this.danger(res.data.message);
+                        this.toast(res.data.message, 'is-danger', 3000);
                     }
                 })
                 .catch(err => {
                     console.log(err);
                     // indicate that something went wrong
-                    this.danger('There was an error. Please try again.');
+                    this.toast(
+                        'There was an error. Please try again.',
+                        'is-danger',
+                        3000
+                    );
                 });
         },
-        success(message) {
+        toast(message, type, duration) {
             this.$buefy.toast.open({
                 message: message,
-                type: 'is-success'
-            });
-        },
-        danger(message) {
-            this.$buefy.toast.open({
-                duration: 5000,
-                message: message,
-                type: 'is-danger'
+                type: type,
+                duration: duration
             });
         }
     }
@@ -70,11 +68,5 @@ export default {
 </script>
 
 <style lang="scss">
-.card-container {
-    width: 60vw; /*can be in percentage also.*/
-    height: auto;
-    margin: 0 auto;
-    padding: 10px;
-    position: relative;
-}
+@import '../styles/views/emailVerification.scss';
 </style>

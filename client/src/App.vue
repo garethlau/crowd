@@ -22,11 +22,14 @@ export default {
 </script>
 
 <style lang="scss">
+
+// Import global styles
+@import './styles/global.scss';
 // Import Bulma's core
 @import '~bulma/sass/utilities/_all';
 
-// Set your colors
-$primary: #8c67ef;
+// Set University Colors
+@import './styles/themes/western.scss';
 $primary-invert: findColorInvert($primary);
 $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
