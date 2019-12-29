@@ -68,17 +68,18 @@ export default {
                 .logout()
                 .then(res => {
                     console.log(res);
-                    this.toast('Logged out.', 'is-success');
+                    this.toast('Logged out.', 'is-success', 2000);
                     store.clearUser();
                 })
                 .catch(err => {
                     console.log(err);
-                    this.toast('Error logging out.', 'is-danger');
+                    this.toast('Error logging out.', 'is-danger', 3000);
                 });
         },
-        toast(message, type) {
+        toast(message, type, duration) {
             this.$buefy.toast.open({
                 message: message,
+                duration: duration,
                 type: type
             });
         }

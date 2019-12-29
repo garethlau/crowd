@@ -58,12 +58,12 @@ export default {
                 .login(data)
                 .then(res => {
                     if (res.data.message == 'User does not exist.') {
-                        this.danger(res.data.message);
+                        this.toast(res.data.message, 'is-danger', 3000);
                     } else if (res.data.message == 'Incorrect password.') {
-                        this.danger(res.data.message);
+                        this.danger(res.data.message, 'is-danger', 3000);
                     } else {
                         // res.data.message = "Logged in."
-                        this.success(res.data.message);
+                        this.toast(res.data.message, 'is-success', 2000);
                         store.setUser(res.data.user);
                         setTimeout(() => {
                             this.$router.push('/');
@@ -75,19 +75,14 @@ export default {
                     this.danger('There was an error. Please try again later.');
                 });
         },
-        success(message) {
+        toast(message, type, duration) {
             this.$buefy.toast.open({
                 message: message,
-                type: 'is-success'
+                duration: duration,
+                type: type
             });
         },
-        danger(message) {
-            this.$buefy.toast.open({
-                duration: 5000,
-                message: message,
-                type: 'is-danger'
-            });
-        }
+
     }
 };
 </script>

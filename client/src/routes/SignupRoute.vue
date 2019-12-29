@@ -128,16 +128,18 @@ export default {
                     console.log('mesage after signup', res.data.message);
                     if (res.data.message == 'Email already is being used.') {
                         // show an error on the label
-                        this.danger(res.data.message);
+                        this.toast(res.data.message, 'is-danger', 3000);
                     } else if (res.data.message == 'Error saving user.') {
                         // an error hapened on our backend
-                        this.danger(res.data.message);
+                        this.toast(res.data.message, 'is-danger', 3000);
                     } else {
                         // sign up went well, user needs to verify the email
                         // res.data.message == "User signed up"
                         // indicate to the user that they need to verify their account
-                        this.success(
-                            'Account created. Please verify your email.'
+                        this.toast(
+                            'Account created. Please verify your email.',
+                            'is-success',
+                            2000
                         );
                         // set the global user
                         console.log("signup user!!!", res.data.user)
@@ -185,17 +187,11 @@ export default {
                 this.lastNameStatus = 'is-success';
             }
         },
-        success(message) {
+        toast(message, type, duration) {
             this.$buefy.toast.open({
                 message: message,
-                type: 'is-success'
-            });
-        },
-        danger(message) {
-            this.$buefy.toast.open({
-                duration: 5000,
-                message: message,
-                type: 'is-danger'
+                duration: duration,
+                type: type
             });
         }
     }
