@@ -3,8 +3,16 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const session = require('express-session');
+
 const keys = require('./config/keys');
+
 const app = express();
+
+
+require('./models/user.js');    // schema
+require('./services/passport.js');  // passport
 
 app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({
@@ -13,6 +21,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({
     limit: '500mb'
 }));
+app.use(session({
+    secret: "verysecretsecret"
+}))
+app.use(passport.initialize())
+app.use(passport.session());    // persistent login session
+
+
 app.use(cors());
 app.use(require('./routes'))
 
