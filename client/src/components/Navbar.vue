@@ -42,7 +42,82 @@
                     </router-link>
                 </div>
                 <div class="buttons" v-else>
-                    <a class="button is-light" v-on:click="logout">Logout</a>
+                    <div class="navbar-end">
+                        <b-dropdown
+                            v-model="navigation"
+                            position="is-bottom-left"
+                            aria-role="menu"
+                        >
+                            <a class="navbar-item" slot="trigger" role="button">
+                                <span>Menu</span>
+                                <b-icon
+                                    pack="fas"
+                                    icon="caret-down"
+                                    size="is-small"
+                                >
+                                </b-icon>
+                            </a>
+
+                            <b-dropdown-item custom aria-role="menuitem">
+                                Hello,
+                                <b>{{
+                                    this.storeState.user.firstName +
+                                        ' ' +
+                                        this.storeState.user.lastName
+                                }}</b>
+                            </b-dropdown-item>
+                            <hr class="dropdown-divider" />
+                            <b-dropdown-item
+                                value="home"
+                                aria-role="menuitem"
+                                has-link
+                            >
+                                <router-link :to="{ path: '/' }">
+                                    <b-icon icon="home"></b-icon>
+                                    Home
+                                </router-link>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                value="profile"
+                                aria-role="menuitem"
+                                has-link
+                            >
+                                <router-link :to="{ path: '/profile' }">
+                                    <b-icon icon="user"></b-icon>
+                                    Profile
+                                </router-link>
+                            </b-dropdown-item>
+                            <hr class="dropdown-divider" aria-role="menuitem" />
+                            <b-dropdown-item
+                                v-for="(course, index) in storeState.user
+                                    .classes"
+                                v-bind:key="index"
+                                has-link
+                            >
+                                <router-link
+                                    :to="{ path: `/course/${course}` }"
+                                >
+                                    <b-icon icon="book-open"></b-icon>
+                                    {{ course }}
+                                </router-link>
+                            </b-dropdown-item>
+                            <hr class="dropdown-divider" aria-role="menuitem" />
+                            <b-dropdown-item value="settings" has-link>
+                                <router-link :to="{ path: '/settings' }">
+                                    <b-icon icon="cog"></b-icon>
+                                    Settings
+                                </router-link>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                value="logout"
+                                aria-role="menuitem"
+                                v-on:click="logout"
+                            >
+                                <b-icon icon="sign-out-alt"></b-icon>
+                                Logout
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </div>
                 </div>
             </b-navbar-item>
         </template>
@@ -59,7 +134,8 @@ export default {
     props: ['theme'],
     data() {
         return {
-            storeState: store.state
+            storeState: store.state,
+            navigation: 'profile'
         };
     },
     methods: {
@@ -87,6 +163,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

@@ -12,7 +12,7 @@ import { store } from '../store';
 
 const isLoggedIn = (to, from, next) => {
     if (store.state.user != null) {
-        next(to);
+        next();
         return;
     }
     next('/login');
@@ -42,8 +42,7 @@ export default new Router({
         {
             path: '/verify-email',
             name: 'VertifyEmail',
-            component: EmailVerification,
-            beforeEnter: isLoggedIn
+            component: EmailVerification
         },
         {
             path: '/login',
@@ -54,7 +53,20 @@ export default new Router({
         {
             path: '/profile',
             name: 'Profile',
-            component: ProfileRoute
+            component: ProfileRoute,
+            beforeEnter: isLoggedIn
         }
     ]
 });
+
+/*
+
+for development use
+{
+            path: '/profile',
+            name: 'Profile',
+            component: ProfileRoute
+        }
+
+so you don't need to log in everytime you refresh
+ */
