@@ -20,4 +20,17 @@ export default class AuthService {
                 });
         });
     }
+    verify(code) {
+        return new Promise((resolve, reject) => {
+            const url = './api/v1/user/signup/' + code;
+            axios
+                .get(url)
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
 }

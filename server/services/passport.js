@@ -28,13 +28,13 @@ passport.use("local-login", new LocalStrategy({
     User.findOne({email, email}, (err, user) => {
         if (err) return done(err);
         if (!user) {
-            return done(null, false, {message: "User does not exist"})
+            return done(null, false, {message: "User does not exist."})
         }
         const hash = user.password;
         if (!user.validPassword(password, hash)) {
-            return done(null, false, {message: "Incorrect password"});
+            return done(null, false, {message: "Incorrect password."});
         }
-        return done(null, user, {message: "Logged in"})
+        return done(null, user, {message: "Logged in."})
     })
 }))
 
@@ -53,7 +53,7 @@ passport.use(
       User.findOne({ email: email }, (err, user) => {
         if (err) return done(err);
         if (user) {
-          return done(null, false, { message: "Email already is being used" });
+          return done(null, false, { message: "Email already is being used." });
         } else {
           // check if email is edu
 
@@ -61,7 +61,7 @@ passport.use(
           const buf = crypto.randomBytes(256);
           const token = buf.toString("hex");
           // send verification email
-          const htmlContent = `Follow this link http://localhost:5000/api/v1/user/signup/${token}`;
+          const htmlContent = `Use this token to verify your email: ${token}`;
 
           const request = mailjet.post("send", { version: "v3.1" }).request({
             Messages: [
@@ -76,10 +76,10 @@ passport.use(
                     Name: firstName
                   }
                 ],
-                Subject: "Please Verify",
-                TextPart: "hello",
+                Subject: "Please verify your email",
+                TextPart: "",
                 HTMLPart: htmlContent,
-                CustomID: "nice"
+                CustomID: ""
               }
             ]
           });
@@ -107,11 +107,11 @@ passport.use(
             .save()
             .then(savedUser => {
               console.log("Saved user", savedUser);
-              return done(null, user, { message: "User signed up" });
+              return done(null, user, { message: "User signed up." });
             })
             .catch(err => {
-              console.log("error saving user");
-              return done(null, false, { message: "Error saving user" });
+              console.log("error saving user.");
+              return done(null, false, { message: "Error saving user." });
             });
         }
       });

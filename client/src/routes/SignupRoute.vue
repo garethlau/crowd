@@ -123,15 +123,23 @@ export default {
                 .signup(user)
                 .then(res => {
                     console.log('mesage after signup', res.data.message);
-                    if (res.data.message == 'Email already is being used') {
+                    if (res.data.message == 'Email already is being used.') {
                         // show an error on the label
-                    } else if (res.data.message == 'Error saving user') {
+                        this.danger(res.data.message);
+                    } else if (res.data.message == 'Error saving user.') {
                         // an error hapened on our backend
+                        this.danger(res.data.message);
                     } else {
                         // sign up went well, user needs to verify the email
                         // res.data.message == "User signed up"
                         // indicate to the user that they need to verify their account
+                        this.success(
+                            'Account created. Please verify your email.'
+                        );
                         // redirect
+                        setTimeout(() => {
+                            this.$router.push('/');
+                        }, 3000);
                     }
                 })
                 .catch(err => {
@@ -170,6 +178,19 @@ export default {
                 this.lastNameMessage = '';
                 this.lastNameStatus = 'is-success';
             }
+        },
+        success(message) {
+            this.$buefy.toast.open({
+                message: message,
+                type: 'is-success'
+            });
+        },
+        danger(message) {
+            this.$buefy.toast.open({
+                duration: 5000,
+                message: message,
+                type: 'is-danger'
+            });
         }
     }
 };

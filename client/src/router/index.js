@@ -1,20 +1,26 @@
-import Vue from "vue";
-import Router from "vue-router";
-import SignupRoute from "@/routes/SignupRoute";
-import HelloWorld from "@/components/HelloWorld";
+import Vue from 'vue';
+import Router from 'vue-router';
+import HelloWorld from '@/components/HelloWorld';
+import SignupRoute from '@/routes/SignupRoute';
+import EmailVerification from '@/routes/EmailVerificationRoute';
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
-      path: "/",
-      name: "Hello",
-      component: HelloWorld
-    },
-    {
-      path: "/signup",
-      name: "Signup",
-      component: SignupRoute
-    }
-  ]
+    routes: [
+        {
+            path: '/',
+            name: 'Hello',
+            component: HelloWorld
+        },
+        {
+            path: '/signup',
+            name: 'Signup',
+            component: SignupRoute
+        },
+        {
+          path: '/verify-email',
+          name: 'VertifyEmail',
+          component: EmailVerification
+        }
+    ]
 });

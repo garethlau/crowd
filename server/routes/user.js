@@ -67,10 +67,10 @@ router.get("/signup/:token", (req, res) => {
 		(err, user) => {
 			if (err) {
 				console.log("There was an err", err);
-				res.send({ message: "There was an error" });
+				res.send({ message: "There was an error." });
 			}
 			if (!user) {
-				console.log("Password token is invalid or expired");
+				console.log("Password token is invalid or expired.");
 				res.send({ message: "Invalid token" });
 			} else {
 				user.isVerified = true;
@@ -78,12 +78,12 @@ router.get("/signup/:token", (req, res) => {
 				user.createAccountExpires = "";
 				user.save()
 					.then(savedUser => {
-						console.log("user verified");
-						res.send({ message: "nice" });
+						console.log("User verified.");
+						res.send({ message: "User verified." });
 					})
 					.catch(err => {
-						console.log("There was an errorr");
-						res.send({ message: err });
+						console.log("There was an error.");
+						res.send({ message: "There was an error." });
 					});
 			}
 		}
