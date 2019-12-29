@@ -15,7 +15,11 @@
                         :type="passwordStatus"
                         :message="passwordMessage"
                     >
-                        <b-input v-model="password"></b-input>
+                        <b-input
+                            v-model="password"
+                            type="password"
+                            password-reveal
+                        ></b-input>
                     </b-field>
                 </section>
                 <div class="buttons">
@@ -49,7 +53,7 @@ export default {
     },
     methods: {
         login() {
-            let email = this.email.toLowerCase()
+            let email = this.email.toLowerCase();
             console.log(email, this.password);
             const data = {
                 email: email,
@@ -82,8 +86,7 @@ export default {
                 duration: duration,
                 type: type
             });
-        },
-
+        }
     }
 };
 </script>
