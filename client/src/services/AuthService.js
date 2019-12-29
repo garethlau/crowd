@@ -20,9 +20,40 @@ export default class AuthService {
                 });
         });
     }
+    login(data) {
+        return new Promise((resolve, reject) => {
+            let config = {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            const url = '/api/v1/user/login';
+            axios
+                .post(url, data, config)
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
+    logout() {
+        return new Promise((resolve, reject) => {
+            axios
+                .get('/api/v1/user/logout')
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
     verify(code) {
         return new Promise((resolve, reject) => {
-            const url = './api/v1/user/signup/' + code;
+            const url = '/api/v1/user/signup/' + code;
             axios
                 .get(url)
                 .then(res => {

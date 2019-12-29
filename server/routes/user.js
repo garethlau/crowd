@@ -32,7 +32,9 @@ router.post("/login", (req, res, next) => {
 
 // logout
 router.get("/logout", (req, res) => {
-	res.send("logout");
+	req.logout();   // passport session handles logout
+    req.session.destroy();  // destroy the session
+	res.send("Logged out.");
 });
 
 // sign up

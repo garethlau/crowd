@@ -139,7 +139,7 @@ export default {
                         // redirect
                         setTimeout(() => {
                             this.$router.push('/');
-                        }, 3000);
+                        }, 1000);
                     }
                 })
                 .catch(err => {
