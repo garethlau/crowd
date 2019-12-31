@@ -3,10 +3,31 @@
 		<div class="columns">
 			<div class="column">
 				<section>
-					<b-field
-						label="Title">
+					<b-field label="Title">
 						<b-input v-model="title"></b-input>
 					</b-field>
+					<div class="block">
+						<b-field label = "Type">
+						</b-field>
+							<b-radio v-model="type"
+                name="name"
+                native-value="Text">
+                Text
+            </b-radio>
+            <b-radio v-model="type"
+                name="name"
+                native-value="PDF">
+               	PDF 
+            </b-radio>
+            <b-radio v-model="type"
+                name="name"
+                native-value="Link">
+               	Link 
+            </b-radio>
+					</div>
+					{{ type }}
+					<form>
+					</form>
 				</section>
 			</div>
 		</div>
@@ -14,4 +35,14 @@
 </template>
 
 <script>
+//import AddContent from "../src/services/AddContent";
+//const addContent = new AddContent()
+export default {
+	name: "CreateResourceRoute",
+	data(){
+		return {
+			type: ""
+		}
+	}
+}
 </script>
