@@ -25,9 +25,27 @@
                	Link 
             </b-radio>
 					</div>
-					{{ type }}
-					<form>
-					</form>
+						<div v-show="type=== 'Text'">
+							<b-field label="Text">
+								<b-input type="textarea" v-model="textInput"></b-input>
+							</b-field>
+						</div>
+						<div v-show="type=== 'PDF'">
+							<b-field class="file">
+								<b-upload v-model="pdfFile">
+									<a class="button is-primary"	>
+										<b-icon icon="upload"></b-icon>
+										<span>Click to upload</span>
+									</a>
+								</b-upload>
+								<span class="file-name" v-if="pdfFile">
+									{{pdfFile.name}}
+								</span>
+							</b-field>
+						</div>
+						<div v-show="type=== 'Link'">
+							link
+						</div>
 				</section>
 			</div>
 		</div>
@@ -41,7 +59,8 @@ export default {
 	name: "CreateResourceRoute",
 	data(){
 		return {
-			type: ""
+			type: "",
+			pdfFile: null
 		}
 	}
 }
