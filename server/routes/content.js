@@ -10,12 +10,13 @@ router.get('/', (req, res) => {
 })
 
 router.get("/create", (req, res) => {
-	console.log("create")
-	res.json({"test":"create page"})
+	console.log();
+	res.json({"test":"create page"});
 })
 
 router.post("/create", (req, res)=> {
-
+	console.log(req.body);
+	res.json({"test": "create content"});
 })
 
 router.get("/:id", (req, res) => {

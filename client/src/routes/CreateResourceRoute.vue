@@ -44,24 +44,69 @@
 							</b-field>
 						</div>
 						<div v-show="type=== 'Link'">
-							link
+							<b-field label="Link">
+								<b-input v-model="linkInput"></b-input>
+							</b-field>
 						</div>
 				</section>
 			</div>
 		</div>
-		<b-button	type="is-primary" onclick="">Submit</b-button>
+		<b-button	type="is-primary" v-on:click="submit">Submit</b-button>
 	</div>
 </template>
 
 <script>
 //import AddContent from "../src/services/AddContent";
 //const addContent = new AddContent()
+import axios from "axios"
 export default {
 	name: "CreateResourceRoute",
 	data(){
 		return {
+			title: "",
 			type: "",
-			pdfFile: null
+			pdfFile: null,
+			textInput: "",
+			linkInput: ""
+		}
+	},
+	methods: {
+		submit: function(){
+			//console.log(this.type);
+			const url = "/api/v1/content/create";
+			var data;
+			if(this.type === "Text"){
+				data = {
+					title: this.title,
+					type: this.type,
+					input: this.textInput
+				};
+			}else if (this.type === "PDF"){
+
+				data = {
+					title: this.title,
+					type: this.type,
+					input: this.pdfFile
+				};
+			}else if (this.type === "Link"){
+
+				data = {
+					title: this.title,
+					type: this.type,
+					input: this.linkInput
+				};
+			}else{
+				data = {
+					"nothing":"nothing"
+				}
+			}
+			axios.post(url, data)
+				.then(function(response) {
+					console.log(response);
+				})
+				.catch(function (error){
+					console.log(error);
+				});
 		}
 	}
 }
