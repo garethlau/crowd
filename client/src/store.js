@@ -1,6 +1,10 @@
 export const store = {
     state: {
-        user: null
+        user: {
+            firstName: 'Gareth',
+            lastName: 'Lau',
+            classes: ['ES1036', 'AM1413']
+        }
     },
     setUser(user) {
         this.state.user = user;
@@ -8,4 +12,4 @@ export const store = {
     clearUser() {
         this.state.user = null;
     }
-}
+};
