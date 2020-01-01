@@ -30,11 +30,6 @@ const isNotLoggedIn = (to, from, next) => {
 export default new Router({
     routes: [
         {
-            path: '/',
-            name: 'Hello',
-            component: HelloWorld
-        },
-        {
             path: '/signup',
             name: 'Signup',
             component: SignupRoute,
