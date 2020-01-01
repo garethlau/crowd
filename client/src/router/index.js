@@ -53,7 +53,6 @@ export default new Router({
             beforeEnter: isNotLoggedIn
         },
         {
-<<<<<<< HEAD
           path: '/login',
           name: 'Login',
           component: LoginRoute
@@ -67,15 +66,14 @@ export default new Router({
 				path: '/content/create',
 				name: "Create Resource",
 				component: CreateResourceRoute
-			}
+			},
+			{
 
-=======
-            path: '/profile',
-            name: 'Profile',
-            component: ProfileRoute,
-            beforeEnter: isLoggedIn
-        }
->>>>>>> 2fa1a98049e6e861ca9325d60f33a58c92f793ee
+					path: '/profile',
+					name: 'Profile',
+					component: ProfileRoute,
+					beforeEnter: isLoggedIn
+			}
     ]
 });
 
