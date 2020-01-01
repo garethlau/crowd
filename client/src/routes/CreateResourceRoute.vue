@@ -49,6 +49,7 @@
 				</section>
 			</div>
 		</div>
+		<b-button	type="is-primary" onclick="">Submit</b-button>
 	</div>
 </template>
 
