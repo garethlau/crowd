@@ -11,7 +11,7 @@ import CourseRoute from '@/routes/CourseRoute';
 
 Vue.use(Router);
 import { store } from '../store';
-/*
+
 const isLoggedIn = (to, from, next) => {
     if (store.state.user != null) {
         next();
@@ -19,7 +19,7 @@ const isLoggedIn = (to, from, next) => {
     }
     next('/login');
 };
-*/
+
 
 const isNotLoggedIn = (to, from, next) => {
     if (store.state.user == null) {
@@ -61,7 +61,8 @@ export default new Router({
 			{
 				path: '/resource/create',
 				name: "Create Resource",
-				component: CreateResourceRoute
+				component: CreateResourceRoute,
+				beforeEnter: isLoggedIn
 			},
 			{
             path: '/profile',
