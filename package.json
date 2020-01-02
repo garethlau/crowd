@@ -5,7 +5,7 @@
     "start": "cd server && node index.js",
     "build": "webpack",
     "heroku-prebuild": "cd client && npm install && cd .. && cd server && npm install",
-    "postinstall": "cd client && nom run build"
+    "postinstall": "cd client && npm run build"
   },
   "engines": {
     "node": "12.13.0"
