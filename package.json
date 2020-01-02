@@ -4,7 +4,8 @@
   "scripts": {
     "start": "cd server && node index.js",
     "build": "webpack",
-    "heroku-prebuild": "cd client && npm install && ./node_modules/.bin/vue-cli-service build && cd .. && cd server && npm install"
+    "heroku-prebuild": "cd client && npm install && cd .. && cd server && npm install",
+    "postinstall": "cd client && nom run build"
   },
   "engines": {
     "node": "12.13.0"
