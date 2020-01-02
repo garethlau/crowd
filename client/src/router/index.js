@@ -4,13 +4,14 @@ import Router from 'vue-router';
 import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
-import ContentRoute from '@/routes/ContentRoute';
+import ResourceRoute from '@/routes/ContentRoute';
 import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
+import CourseRoute from '@/routes/CourseRoute';
 
 Vue.use(Router);
 import { store } from '../store';
-
+/*
 const isLoggedIn = (to, from, next) => {
     if (store.state.user != null) {
         next();
@@ -18,6 +19,7 @@ const isLoggedIn = (to, from, next) => {
     }
     next('/login');
 };
+*/
 
 const isNotLoggedIn = (to, from, next) => {
     if (store.state.user == null) {
@@ -52,22 +54,25 @@ export default new Router({
           component: LoginRoute
         },
 			{
-				path: '/content',
-				name: 'Content',
-				component: ContentRoute
+				path: '/resource',
+				name: 'Resource',
+				component: ResourceRoute
 			},
 			{
-				path: '/content/create',
+				path: '/resource/create',
 				name: "Create Resource",
 				component: CreateResourceRoute
 			},
 			{
-
-					path: '/profile',
-					name: 'Profile',
-					component: ProfileRoute,
-					beforeEnter: isLoggedIn
-			}
+            path: '/profile',
+            name: 'Profile',
+            component: ProfileRoute,
+        },
+        {
+            path: '/:courseCode',
+            name: 'CourseRoute',
+            component: CourseRoute
+        },
     ]
 });
 

@@ -10,8 +10,8 @@ const keys = require('./config/keys');
 
 const app = express();
 
-
 require('./models/user.js');    // schema
+require('./models/resource.js');    // schema
 require('./services/passport.js');  // passport
 
 app.use(morgan('combined'));
