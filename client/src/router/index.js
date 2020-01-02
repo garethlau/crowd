@@ -4,7 +4,7 @@ import Router from 'vue-router';
 import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
-import ResourceRoute from '@/routes/ContentRoute';
+import ResourceRoute from '@/routes/ResourceRoute';
 import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';

@@ -6,6 +6,9 @@
 					<b-field label="Title">
 						<b-input v-model="title"></b-input>
 					</b-field>
+					<b-field label="Course">
+						<b-input v-model="course"></b-input>
+					</b-field>
 					<div class="block">
 						<b-field label = "Type">
 						</b-field>
@@ -78,6 +81,7 @@ export default {
 			if(this.type === "Text"){
 				data = {
 					title: this.title,
+					course: this.course,
 					type: this.type,
 					input: this.textInput
 				};
@@ -85,6 +89,7 @@ export default {
 
 				data = {
 					title: this.title,
+					course: this.course,
 					type: this.type,
 					input: this.pdfFile
 				};
@@ -92,6 +97,7 @@ export default {
 
 				data = {
 					title: this.title,
+					course: this.course,
 					type: this.type,
 					input: this.linkInput
 				};

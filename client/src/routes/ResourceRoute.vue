@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<a href="#/content/create">New Post</a>
+		<a href="#/resource/create">New Post</a>
 	</div>
 </template>
 
