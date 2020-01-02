@@ -22,7 +22,8 @@ app.use(bodyParser.json({
     limit: '500mb'
 }));
 app.use(session({
-    secret: "verysecretsecret"
+    secret: "verysecretsecret",
+    maxAge: null
 }))
 app.use(passport.initialize())
 app.use(passport.session());    // persistent login session
