@@ -70,9 +70,8 @@
 <script>
 const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
 import AuthService from '../services/AuthService';
-import {store} from '../store';
+import { store } from '../store';
 const authService = new AuthService();
-
 
 export default {
     name: 'SignupRoute',
@@ -121,12 +120,12 @@ export default {
                 lastName: this.lastName,
                 classes: this.classes
             };
-            console.log(user);
+            // console.log(user);
             // signup
             authService
                 .signup(user)
                 .then(res => {
-                    console.log('mesage after signup', res.data.message);
+                    // console.log('mesage after signup', res.data.message);
                     if (res.data.message == 'Email already is being used.') {
                         // show an error on the label
                         this.toast(res.data.message, 'is-danger', 3000);
@@ -143,7 +142,7 @@ export default {
                             2000
                         );
                         // set the global user
-                        console.log("signup user!!!", res.data.user)
+                        // console.log('signup user!!!', res.data.user);
                         store.setUser(res.data.user);
                         // redirect
                         setTimeout(() => {
@@ -152,8 +151,10 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log('there was anerr', err);
                     // flash warning
+                    if (err) {
+                        this.toast('There was an error', 'is-danger', 3000);
+                    }
                 });
         },
         validateEmail() {

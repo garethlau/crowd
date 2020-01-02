@@ -54,11 +54,11 @@ if (environment === "dev"){
     console.log("\x1b[31m", "ENVIRONMENT IS DEV - ENSURE THAT THIS IS NOT SHOWING WHEN DEPLOYED", "\x1b[0m");
 } else if (environment === "production") {
     console.log("\x1b[34m", "RUNNING IN PRODUCTION", "\x1b[0m");
-    app.use(express.static('client/build'));    // make sure express serves production assets
+    app.use(express.static('../client/dist'));    // make sure express serves production assets
     // make sure express serves index.html if it doesn't know the route
     const path = require('path');
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.resolve(__dirname, '..', 'client', 'dist', 'index.html'));
     });
 }
 
