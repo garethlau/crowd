@@ -3,7 +3,6 @@
   "verson": "1.0.0",
   "scripts": {
     "start": "cd server && node index.js",
-    "build": "webpack",
     "heroku-prebuild": "cd client && npm install && cd .. && cd server && npm install",
     "postinstall": "cd client && npm run build"
   },
