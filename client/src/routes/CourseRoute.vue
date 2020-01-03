@@ -16,8 +16,9 @@
         <section v-if="this.$route.query.week">
             <div class="container">
                 <div v-if="filteredResources.length == 0">
-                    No resources here :
-                    I dont like that this shows up no matter what. Look into possibly adding a delay or loading animation while when filtering the resources.
+                    No resources here : I dont like that this shows up no matter
+                    what. Look into possibly adding a delay or loading animation
+                    while when filtering the resources.
                 </div>
                 <div v-else>
                     <ResourceTile
