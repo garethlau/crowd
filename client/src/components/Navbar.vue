@@ -28,7 +28,7 @@
 
         <template slot="end">
             <b-navbar-item tag="div">
-                <div class="buttons" v-if="storeState.user == null">
+                <div class="buttons" v-if="!this.user._id">
                     <router-link :to="{ path: '/signup' }">
                         <a class="button is-primary">
                             <strong>Sign up</strong>
@@ -61,9 +61,15 @@
                             <b-dropdown-item custom aria-role="menuitem">
                                 Hello,
                                 <b>{{
-                                    this.storeState.user.firstName +
+                                    this.user.firstName
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                        this.user.firstName.slice(1) +
                                         ' ' +
-                                        this.storeState.user.lastName
+                                        this.user.lastName
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                        this.user.lastName.slice(1)
                                 }}</b>
                             </b-dropdown-item>
                             <hr class="dropdown-divider" />
@@ -87,16 +93,17 @@
                                     Profile
                                 </router-link>
                             </b-dropdown-item>
-                            <hr class="dropdown-divider" aria-role="menuitem" />
+                            <hr
+                                class="dropdown-divider"
+                                aria-role="menuitem"
+                                v-if="this.user.classes.length != 0"
+                            />
                             <b-dropdown-item
-                                v-for="(course, index) in storeState.user
-                                    .classes"
+                                v-for="(course, index) in this.user.classes"
                                 v-bind:key="index"
                                 has-link
                             >
-                                <router-link
-                                    :to="{ path: `/course/${course}` }"
-                                >
+                                <router-link :to="{ path: `/${course}` }">
                                     <b-icon icon="book-open"></b-icon>
                                     {{ course }}
                                 </router-link>
@@ -125,7 +132,6 @@
 </template>
 
 <script>
-import { store } from '../store';
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
 
@@ -134,9 +140,37 @@ export default {
     props: ['theme'],
     data() {
         return {
-            storeState: store.state,
-            navigation: 'profile'
+            navigation: 'profile',
+            user: {}
         };
+    },
+    mounted() {
+        authService
+            .isAuth()
+            .then(res => {
+                console.log('res in isAuth is');
+                console.log(res);
+                this.user = res.data.user;
+            })
+            .catch(err => {
+                console.log(err);
+                this.user = {};
+            });
+    },
+    watch: {
+        $route() {
+            authService
+                .isAuth()
+                .then(res => {
+                    console.log('res in isAuth is');
+                    console.log(res);
+                    this.user = res.data.user;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.user = {};
+                });
+        }
     },
     methods: {
         logout() {
@@ -144,8 +178,8 @@ export default {
                 .logout()
                 .then(res => {
                     console.log(res);
+                    this.user = {};
                     this.toast('Logged out.', 'is-success', 2000);
-                    store.clearUser();
                 })
                 .catch(err => {
                     console.log(err);
