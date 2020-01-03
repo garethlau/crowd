@@ -6,10 +6,11 @@ import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
+import CourseRoute from '@/routes/CourseRoute';
 
 Vue.use(Router);
 import { store } from '../store';
-
+/*
 const isLoggedIn = (to, from, next) => {
     if (store.state.user != null) {
         next();
@@ -17,6 +18,7 @@ const isLoggedIn = (to, from, next) => {
     }
     next('/login');
 };
+*/
 
 const isNotLoggedIn = (to, from, next) => {
     if (store.state.user == null) {
@@ -54,8 +56,12 @@ export default new Router({
             path: '/profile',
             name: 'Profile',
             component: ProfileRoute,
-            beforeEnter: isLoggedIn
-        }
+        },
+        {
+            path: '/:courseCode',
+            name: 'CourseRoute',
+            component: CourseRoute
+        },
     ]
 });
 
