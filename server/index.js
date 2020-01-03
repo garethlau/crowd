@@ -10,8 +10,8 @@ const keys = require('./config/keys');
 
 const app = express();
 
-
 require('./models/user.js');    // schema
+require('./models/resource.js');    // schema
 require('./services/passport.js');  // passport
 
 app.use(morgan('combined'));
@@ -22,7 +22,8 @@ app.use(bodyParser.json({
     limit: '500mb'
 }));
 app.use(session({
-    secret: "verysecretsecret"
+    secret: "verysecretsecret",
+    maxAge: null
 }))
 app.use(passport.initialize())
 app.use(passport.session());    // persistent login session

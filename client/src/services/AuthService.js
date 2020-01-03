@@ -51,6 +51,18 @@ export default class AuthService {
                 });
         });
     }
+    isAuth() {
+        return new Promise((resolve, reject) => {
+            axios
+                .get('/api/v1/user/current')
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
     verify(code) {
         return new Promise((resolve, reject) => {
             const url = '/api/v1/user/signup/' + code;
