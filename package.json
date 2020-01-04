@@ -1,7 +1,12 @@
 {
+  "name": "myapp",
+  "verson": "1.0.0",
   "scripts": {
-    "start": "cd server/ && node index.js",
-    "build": "webpack",
-    "heroku-prebuild": "cd client && npm install && npm run build && cd .. && cd server && npm install"
+    "start": "cd server && node index.js",
+    "heroku-prebuild": "cd client && npm install && cd .. && cd server && npm install",
+    "postinstall": "cd client && npm run build"
+  },
+  "engines": {
+    "node": "12.13.0"
   }
 }

@@ -25,6 +25,10 @@
                         v-for="resource in filteredResources"
                         v-bind:key="resource.id"
                         v-bind:data="resource"
+                        @clickedResource="launchResourceModal"
+                        @clickedUpvote="handleUpvote"
+                        @clickedDownvote="handleDownvote"
+                        @clickedFav="handleFav"
                     />
                 </div>
             </div>
@@ -62,6 +66,19 @@
                 </div>
             </div>
         </section>
+        <section>
+            <b-modal
+                :active.sync="isModalActive"
+                has-modal-card
+                full-screen
+                :can-cancel="false"
+            >
+                <ResourceModal
+                    v-bind:props="resourceModalProps"
+                    @clickedClose="closeModal"
+                />
+            </b-modal>
+        </section>
     </div>
 </template>
 
@@ -74,16 +91,21 @@
  *
  */
 import ResourceTile from '../components/ResourceTile';
+import ResourceModal from '../components/ResourceModal';
 import ResourceService from '../services/ResourceService';
+import CommentService from '../services/CommentService';
 const resourceService = new ResourceService();
+const commentService = new CommentService();
 
 export default {
     name: 'CourseRoute',
-    components: { ResourceTile },
+    components: { ResourceTile, ResourceModal },
     data() {
         return {
             courseCode: '',
-            resources: []
+            resources: [],
+            isModalActive: false,
+            resourceModalProps: {}
         };
     },
     methods: {
@@ -93,6 +115,39 @@ export default {
                 duration: duration,
                 type: type
             });
+        },
+        launchResourceModal(resource) {
+            console.log(resource);
+            commentService
+                .getComments(resource._id, null)
+                .then(res => {
+                    this.resourceModalProps['comments'] = res.data.comments;
+                    this.resourceModalProps['errMsg'] = '';
+                    console.log(this.resourceModalProps.comments);
+                    this.isModalActive = true;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.resourceModalProps['comments'] = [];
+                    this.resourceModalProps['errMsg'] =
+                        'Error loading comments.';
+                });
+            this.resourceModalProps['resource'] = resource;
+        },
+        closeModal() {
+            // close the modal
+            this.isModalActive = false;
+            // clear resource modal props
+            this.resourceModalProps = {};
+        },
+        handleUpvote() {
+            console.log('upvote');
+        },
+        handleDownvote() {
+            console.log('downvote');
+        },
+        handleFav() {
+            console.log('fav');
         }
     },
     created() {
