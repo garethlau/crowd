@@ -148,8 +148,8 @@ export default {
         authService
             .isAuth()
             .then(res => {
-                console.log('res in isAuth is');
-                console.log(res);
+                // console.log('res in isAuth is');
+                // console.log(res);
                 this.user = res.data.user;
             })
             .catch(err => {
@@ -162,8 +162,8 @@ export default {
             authService
                 .isAuth()
                 .then(res => {
-                    console.log('res in isAuth is');
-                    console.log(res);
+                    // console.log('res in isAuth is');
+                    // console.log(res);
                     this.user = res.data.user;
                 })
                 .catch(err => {
