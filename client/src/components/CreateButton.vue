@@ -1,20 +1,20 @@
 <template>
 	<div>
-		<b-button type="is-link" onclick="createResource()">New Post</b-button>
+		<b-button type="is-link" v-on:click="createResource">New Post</b-button>
 	</div>
 </template>
 
 <script>
 export default{
-	data(){
-		return{
-			courseCode: ""
-		}
+	props:{
+		courseCode: String
 	},
 	methods:{
 		createResource(){
-			const router = this.$router
-			router.push("#/resource/create?courseCode="+this.courseCode);
+			const router = this.$router;
+			//console.log(this.$route);
+			console.log("course code: "+this.courseCode);
+			router.push("/resource/create?courseCode="+this.courseCode);
 		}
 	}
 }

@@ -70,7 +70,8 @@ export default {
 			type: "",
 			pdfFile: null,
 			textInput: "",
-			linkInput: ""
+			linkInput: "",
+			course: ""
 		}
 	},
 	methods: {
