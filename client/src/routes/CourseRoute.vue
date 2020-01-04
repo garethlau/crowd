@@ -64,6 +64,7 @@
                         </div>
                     </div>
                 </div>
+                <CreateButton v-bind:courseCode="courseCode"/>
             </div>
         </section>
         <section>
@@ -90,6 +91,7 @@
  * as props to a Resource component. This means we also need to make onChange handlers for upvotes, and comments to keep track of these changes
  *
  */
+import CreateButton from '../components/CreateButton';
 import ResourceTile from '../components/ResourceTile';
 import ResourceModal from '../components/ResourceModal';
 import ResourceService from '../services/ResourceService';
@@ -99,7 +101,7 @@ const commentService = new CommentService();
 
 export default {
     name: 'CourseRoute',
-    components: { ResourceTile, ResourceModal },
+    components: { ResourceTile, ResourceModal, CreateButton },
     data() {
         return {
             courseCode: '',
