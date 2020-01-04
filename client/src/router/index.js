@@ -4,7 +4,6 @@ import Router from 'vue-router';
 import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
-import ResourceRoute from '@/routes/ResourceRoute';
 import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';
@@ -64,11 +63,6 @@ export default new Router({
             path: '/login',
             name: 'Login',
             component: LoginRoute
-        },
-        {
-            path: '/resource',
-            name: 'Resource',
-            component: ResourceRoute
         },
         {
             path: '/resource/create',
