@@ -15,11 +15,18 @@
 
         <section v-if="this.$route.query.week">
             <div class="container">
-                <ResourceTile
-                    v-for="resource in filteredResources"
-                    v-bind:key="resource.id"
-                    v-bind:data="resource"
-                />
+                <div v-if="filteredResources.length == 0">
+                    No resources here : I dont like that this shows up no matter
+                    what. Look into possibly adding a delay or loading animation
+                    while when filtering the resources.
+                </div>
+                <div v-else>
+                    <ResourceTile
+                        v-for="resource in filteredResources"
+                        v-bind:key="resource.id"
+                        v-bind:data="resource"
+                    />
+                </div>
             </div>
         </section>
 
@@ -67,6 +74,8 @@
  *
  */
 import ResourceTile from '../components/ResourceTile';
+import ResourceService from '../services/ResourceService';
+const resourceService = new ResourceService();
 
 export default {
     name: 'CourseRoute',
@@ -74,50 +83,36 @@ export default {
     data() {
         return {
             courseCode: '',
-            resources: [
-                {
-                    week: '1',
-                    title: 'Test 1',
-                    datePosted: 'October 31, 2019',
-                    upvotes: '10',
-                    downvotes: '3',
-                    comments: '',
-                    contentType: '',
-                    content: '', // this might be youtube url, file url, or link
-                    author: 'Sally Kim',
-                    id: '1'
-                },
-                {
-                    week: '1',
-                    title: 'Test 2',
-                    datePosted: 'September 29, 2019',
-                    upvotes: '12',
-                    downvotes: '3',
-                    comments: '',
-                    contentType: '',
-                    content: '', // this might be youtube url, file url, or link
-                    author: 'John Doe',
-                    id: '2'
-                },
-                {
-                    week: '2',
-                    title: 'Test 3',
-                    datePosted: 'September 15, 2019',
-                    upvotes: '2',
-                    downvotes: '4',
-                    comments: '',
-                    contentType: '',
-                    content: '', // this might be youtube url, file url, or link
-                    author: 'Gareth Lau',
-                    id: '3'
-                }
-            ]
+            resources: []
         };
     },
-    methods: {},
+    methods: {
+        toast(message, type, duration) {
+            this.$buefy.toast.open({
+                message: message,
+                duration: duration,
+                type: type
+            });
+        }
+    },
     created() {
         console.log(this.$route);
         this.courseCode = this.$route.params.courseCode;
+    },
+    mounted() {
+        console.log('mounted');
+        // get the resources for the entire course
+        resourceService
+            .getResources(this.courseCode)
+            .then(res => {
+                console.log('res is', res);
+                this.resources = res.data.resources;
+            })
+            .catch(err => {
+                console.log('err is', err);
+                this.resources = [];
+                this.toast(err, 'is-danger', 3000);
+            });
     },
     watch: {
         $route(to, from) {

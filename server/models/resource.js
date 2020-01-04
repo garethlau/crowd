@@ -11,7 +11,8 @@ const ResourceSchema = new Schema({
   comments: Array,
   contentType: String,
   content: String,
-  author: String
+  author: String,
+  lastModified: String,
 });
 
 module.exports = mongoose.model("Resource", ResourceSchema);
