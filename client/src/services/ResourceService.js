@@ -2,6 +2,25 @@ import axios from 'axios';
 const base = '/api/v1/resource/';
 
 export default class ResourceService {
+    newResource(data) {
+        return new Promise((resolve, reject) => {
+            let config = {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'applicaton/json'
+                }
+            };
+            const url = '/api/v1/content/create';
+            axios
+                .post(url, data, config)
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
     getResources(courseCode, week, id) {
         return new Promise((resolve, reject) => {
             let params = {};

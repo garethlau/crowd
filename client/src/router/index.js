@@ -4,22 +4,33 @@ import Router from 'vue-router';
 import SignupRoute from '@/routes/SignupRoute';
 import EmailVerification from '@/routes/EmailVerificationRoute';
 import LoginRoute from '@/routes/LoginRoute';
-import ResourceRoute from '@/routes/ResourceRoute';
 import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';
+
+import AuthService from '../services/AuthService';
+const authService = new AuthService();
 
 Vue.use(Router);
 import { store } from '../store';
 
 const isLoggedIn = (to, from, next) => {
-    if (store.state.user != null) {
-        next();
-        return;
-    }
-    next('/login');
+    const redirectUrl = `/login?redirect=${to.path}`;
+    authService
+        .isAuth()
+        .then(res => {
+            console.log(res);
+            if (!res.data.user) {
+                next(redirectUrl);
+            }
+            next();
+            return;
+        })
+        .catch(err => {
+            console.log(err);
+            next(redirectUrl);
+        });
 };
-
 
 const isNotLoggedIn = (to, from, next) => {
     if (store.state.user == null) {
@@ -49,31 +60,26 @@ export default new Router({
             beforeEnter: isNotLoggedIn
         },
         {
-          path: '/login',
-          name: 'Login',
-          component: LoginRoute
+            path: '/login',
+            name: 'Login',
+            component: LoginRoute
         },
-			{
-				path: '/resource',
-				name: 'Resource',
-				component: ResourceRoute
-			},
-			{
-				path: '/resource/create',
-				name: "Create Resource",
-				component: CreateResourceRoute,
-				beforeEnter: isLoggedIn
-			},
-			{
+        {
+            path: '/resource/create',
+            name: 'Create Resource',
+            component: CreateResourceRoute,
+            beforeEnter: isLoggedIn
+        },
+        {
             path: '/profile',
             name: 'Profile',
-            component: ProfileRoute,
+            component: ProfileRoute
         },
         {
             path: '/:courseCode',
             name: 'CourseRoute',
             component: CourseRoute
-        },
+        }
     ]
 });
 

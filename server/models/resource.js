@@ -6,13 +6,24 @@ const ResourceSchema = new Schema({
   week: String,
   title: String,
   datePosted: String,
-  upvotes: String,
-  downvotes: String,
+  interactions: {
+    upvotes: String,
+    downvotes: String,
+    favs: String
+  },
   comments: Array,
-  contentType: String,
-  content: String,
-  author: String,
-  lastModified: String,
+  content: Object,
+  author: {
+    id: String,
+    firstName: String,
+    lastName: String
+  },
+  lastModified: String
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
 });
 
 module.exports = mongoose.model("Resource", ResourceSchema);

@@ -47,7 +47,13 @@ export default {
             password: '',
             passwordStatus: '',
             passwordMessage: '',
+            redirect: ''
         };
+    },
+    mounted() {
+        console.log('inside loginroute');
+        console.log(this.$route);
+        this.redirect = this.$route.query.redirect;
     },
     methods: {
         login() {
@@ -68,7 +74,11 @@ export default {
                         // res.data.message = "Logged in."
                         this.toast(res.data.message, 'is-success', 2000);
                         setTimeout(() => {
-                            this.$router.push('/');
+                            if (this.redirect == '') {
+                                this.$router.push('/');
+                            } else {
+                                this.$router.push(this.redirect);
+                            }
                         }, 1000);
                     }
                 })

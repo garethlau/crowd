@@ -55,22 +55,25 @@ router.post("/", (req, res) => {
     courseCode,
     week,
     title,
-    datePosted,
-    contentType,
-    content
-  } = req.body.data;
+  } = req.body.resource;
+  const content = req.body.resource.content;
+
   const resource = new Resource({
-    courseCode: courseCode,
+    courseCode: courseCode.toUpperCase(),
     week: week,
     title: title,
-    datePosted: datePosted,
-    upvotes: "0",
-    downvotes: "0",
+    interactions: {
+      upvotes: "0",
+      downvotes: "0",
+      favs: "0",
+    },
     comments: [],
-    contentType: contentType,
     content: content,
-    author: req.user._id,
-    lastModified: "",
+    author: {
+      id: req.user._id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName
+    },
   });
   console.log(resource);
   resource
@@ -93,7 +96,7 @@ router.delete("/", (req, res) => {
   if (!req.user) {
     return res.send({message: "Not authorized to delete this resource."});
   }
-  Resource.findOneAndDelete({_id: resourceId, author: req.user._id}, (err, resource) => {
+  Resource.findOneAndDelete({_id: resourceId, 'author.id': req.user._id}, (err, resource) => {
     if (err) {
       console.log(err);
       return res.send({ message: "There was an error deleting the resource." });
@@ -108,19 +111,18 @@ router.delete("/", (req, res) => {
 // edit a resource (course, week, id)
 router.put("/", (req, res) => {
   const resourceId = req.body.resourceId;
-  const updates = req.body.data;
+  const updates = req.body.resource;
+  console.log(updates)
   if (!resourceId) {
     return res.send({message: "Missing ID."});
   }
   if (!req.user) {
     return res.send({message: "Not authorized to update this resource."});
   }
-  Resource.findOneAndUpdate({_id: resourceId, author: req.user._id}, {
+  Resource.findOneAndUpdate({_id: resourceId, 'author.id': req.user._id}, {
     week: updates.week,
     title: updates.title,
-    contentType: updates.contentType,
     content: updates.content,
-    lastModified: updates.lastModified,
   }, (err, resource) => {
     if (err) {
       console.log(err);

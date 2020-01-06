@@ -13,7 +13,7 @@
                         <b-icon pack="fas" icon="caret-square-down"> </b-icon>
                     </div>
                 </div>
-                <div class="column is-8">
+                <div class="column is-8" v-on:click="launchResourceModal">
                     <div>
                         <p>{{ data.datePosted }} - {{ data.author }}</p>
                     </div>
@@ -23,14 +23,13 @@
                         </p>
                     </div>
                 </div>
-                <div class="column is-3">
+                <div class="column is-3" v-on:click="fav">
                     <div v-if="favourite">
                         <b-icon pack="fas" icon="star"> </b-icon>
                     </div>
                     <div v-else>
                         <b-icon pack="far" icon="star"> </b-icon>
                     </div>
-
                 </div>
             </div>
         </article>
@@ -44,14 +43,24 @@ export default {
     data() {
         return {
             favourite: false
-        }
+        };
     },
     methods: {
         upvote: function() {
-            console.log('Upvote');
+            // console.log('Upvote');
+            this.$emit('clickedDownvote');
         },
         downvote: function() {
-            console.log('downvote');
+            // console.log('downvote');
+            this.$emit('clickedDownvote');
+        },
+        launchResourceModal: function() {
+            // console.log('launch resource modal');
+            this.$emit('clickedResource', this.data);
+        },
+        fav: function() {
+            // console.log('FAVV');
+            this.$emit('clickedFav');
         }
     },
     mounted() {
