@@ -93,7 +93,7 @@ passport.use(
             });
           // create (unverified) user
           let newUser = User();
-          newUser.email = email;
+          newUser.email = email.toLowerCase();
           newUser.password = newUser.generateHash(password);
           newUser.firstName = firstName;
           newUser.lastName = lastName;
