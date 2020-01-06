@@ -135,5 +135,8 @@ router.put("/", (req, res) => {
     return res.send({message: "Resource successfully updated."})
   })
 });
+router.post("/create", (req, res) => {
+
+});
 
 module.exports = router;

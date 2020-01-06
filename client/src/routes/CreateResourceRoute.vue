@@ -73,7 +73,7 @@ export default {
     methods: {
         submit: function() {
             //console.log(this.type);
-            const url = '/api/v1/content/create';
+            const url = '/api/v1/resource/create';
             var data;
             if (this.type === 'Text') {
                 data = {
