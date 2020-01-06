@@ -76,4 +76,6 @@ export default class ResourceService {
     }
     // TODO
     // method to change favourite status
+	
+	//Service for creating new post
 }

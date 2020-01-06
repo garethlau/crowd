@@ -39,8 +39,7 @@
                 >
                     <div
                         class="tile is-parent"
-                        v-for="week in 4"
-                        v-bind:key="week"
+                        v-for="week in 4" v-bind:key="week"
                     >
                         <div class="tile is-child box">
                             <router-link
@@ -62,6 +61,7 @@
                 </div>
             </div>
         </section>
+				<CreateButton v-bind:courseCode="this.courseCode"></CreateButton>
     </div>
 </template>
 
@@ -76,10 +76,11 @@
 import ResourceTile from '../components/ResourceTile';
 import ResourceService from '../services/ResourceService';
 const resourceService = new ResourceService();
+import CreateButton from '../components/CreateButton';
 
 export default {
     name: 'CourseRoute',
-    components: { ResourceTile },
+    components: { ResourceTile , CreateButton},
     data() {
         return {
             courseCode: '',
