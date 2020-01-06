@@ -74,7 +74,7 @@ export default {
                         // res.data.message = "Logged in."
                         this.toast(res.data.message, 'is-success', 2000);
                         setTimeout(() => {
-                            if (this.redirect == '') {
+                            if (!this.redirect) {
                                 this.$router.push('/');
                             } else {
                                 this.$router.push(this.redirect);
