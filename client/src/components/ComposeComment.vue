@@ -1,0 +1,62 @@
+<template>
+    <div class="container">
+        <b-field>
+            <b-input
+                v-model="text"
+                type="textarea"
+                minlength="10"
+                maxlength="100"
+                placeholder="Write your comment here"
+            >
+            </b-input>
+        </b-field>
+        <b-button type="is-primary" @click="addComment">
+            Comment
+        </b-button>
+    </div>
+</template>
+
+<script>
+import CommentService from '../services/CommentService';
+const commentService = new CommentService();
+
+export default {
+    name: 'ComposeComment',
+    data() {
+        return {
+            text: ''
+        };
+    },
+    props: ['resourceId'],
+    methods: {
+        addComment() {
+            console.log(this.text);
+            commentService
+                .newComment(this.text, this.resourceId)
+                .then(res => {
+                    console.log('res in compose is', res);
+                    this.text = '';
+                    this.toast('Comment added.', 'is-success', 2000);
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.toast(err, 'is-danger', 3000);
+                });
+        },
+        toast(message, type, duration) {
+            this.$buefy.toast.open({
+                message: message,
+                duration: duration,
+                type: type
+            });
+        }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+.container {
+    min-height: 100px;
+    margin-bottom: 20px;
+}
+</style>
