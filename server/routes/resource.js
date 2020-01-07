@@ -16,40 +16,40 @@ router.get("/", (req, res) => {
     // get a single resource
     Resource.findById(resourceId, (err, resource) => {
       if (err) {
-        return res.send({ message: "There was an error." });
+        return res.status(500).send({ message: "There was an error." });
       }
       if (!resource) {
-        return res.send({message: "Could not find the resource."});
+        return res.status(404).send({message: "Could not find the resource."});
       }
-      return res.send({ resource: resource });
+      return res.status(200).send({ resource: resource });
     });
   } else if (courseCode && week) {
     // get all resources for a week
     Resource.find({ courseCode: courseCode, week: week }, (err, resources) => {
       if (err) {
-        return res.send({ message: "There was an error." });
+        return res.status(500).send({ message: "There was an error." });
       }
-      return res.send({ resources: resources });
+      return res.status(200).send({ resources: resources });
     });
   } else if (courseCode) {
     // get all resources for a course
     Resource.find({ courseCode: courseCode }, (err, resources) => {
       if (err) {
-        return res.send({ message: "There was an error." });
+        return res.status(500).send({ message: "There was an error." });
         
       }
-      return res.send({ resources: resources });
+      return res.status(200).send({ resources: resources });
     });
   } else {
     // return nothing, didnt specify enough
-    return res.send({ message: "Did not provide enough details." });
+    return res.status(400).send({ message: "Did not provide enough details." });
   }
 });
 
 // create a new resource (course, week)
 router.post("/", (req, res) => {
   if (!req.user) {
-    return res.send({message: "You must be logged in to create a resource."});
+    return res.status(401).send({message: "You must be logged in to create a resource."});
   }
   const {
     courseCode,
@@ -79,11 +79,11 @@ router.post("/", (req, res) => {
   resource
     .save()
     .then(savedResource => {
-      return res.send({ message: "Resource saved successfully." });
+      return res.status(200).send({ message: "Resource saved successfully." });
     })
     .catch(err => {
       console.log(err);
-      return res.send({ message: "There was an error saving the resource." });
+      return res.status(500).send({ message: "There was an error saving the resource." });
     });
 });
 
@@ -91,20 +91,20 @@ router.post("/", (req, res) => {
 router.delete("/", (req, res) => {
   const resourceId = req.body.resourceId;
   if (!resourceId) {
-    return res.send({ message: "Missing ID." });
+    return res.status(400).send({ message: "Missing ID." });
   }
   if (!req.user) {
-    return res.send({message: "Not authorized to delete this resource."});
+    return res.status(401).send({message: "Not authorized to delete this resource."});
   }
   Resource.findOneAndDelete({_id: resourceId, 'author.id': req.user._id}, (err, resource) => {
     if (err) {
       console.log(err);
-      return res.send({ message: "There was an error deleting the resource." });
+      return res.status(500).send({ message: "There was an error deleting the resource." });
     }
     if (!resource) {
-      return res.send({message: "Could not find the resource."})
+      return res.status(404).send({message: "Could not find the resource."})
     }
-    return res.send({ message: "Resource successfully deleted." });
+    return res.status(200).send({ message: "Resource successfully deleted." });
   });
 });
 
@@ -114,10 +114,10 @@ router.put("/", (req, res) => {
   const updates = req.body.resource;
   console.log(updates)
   if (!resourceId) {
-    return res.send({message: "Missing ID."});
+    return res.status(400).send({message: "Missing ID."});
   }
   if (!req.user) {
-    return res.send({message: "Not authorized to update this resource."});
+    return res.status(401).send({message: "Not authorized to update this resource."});
   }
   Resource.findOneAndUpdate({_id: resourceId, 'author.id': req.user._id}, {
     week: updates.week,
@@ -126,13 +126,13 @@ router.put("/", (req, res) => {
   }, (err, resource) => {
     if (err) {
       console.log(err);
-      return res.send({message: "There was an error updating the resource."});
+      return res.status(500).send({message: "There was an error updating the resource."});
     }
     console.log(resource);
     if (!resource) {
-      return res.send({message: "Could not find the resource."});
+      return res.status(404).send({message: "Could not find the resource."});
     }
-    return res.send({message: "Resource successfully updated."})
+    return res.status(200).send({message: "Resource successfully updated."})
   })
 });
 

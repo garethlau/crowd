@@ -12,7 +12,7 @@ const mailjet = require("node-mailjet").connect(
 
 // get user data
 router.get("/current", (req, res) => {
-	res.send({ user: req.user });
+	res.status(200).send({ user: req.user });
 });
 
 // login
@@ -20,11 +20,12 @@ router.post("/login", (req, res, next) => {
 	passport.authenticate("local-login", (err, user, info) => {
 		if (err) return next(err);
 		if (!user) {
-			res.send({ message: info.message });
+			// user was not found
+			res.status(404).send({ message: info.message });
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
-				res.send({ user: user, message: info.message });
+				res.status(200).send({ user: user, message: info.message });
 			});
 		}
 	})(req, res, next);
@@ -34,7 +35,7 @@ router.post("/login", (req, res, next) => {
 router.get("/logout", (req, res) => {
 	req.logout(); // passport session handles logout
 	req.session.destroy(); // destroy the session
-	res.send("Logged out.");
+	res.status(200).send("Logged out.");
 });
 
 // sign up
@@ -47,12 +48,12 @@ router.post("/signup", (req, res, next) => {
 		}
 		if (!user) {
 			// a user with the same email already exists
-			res.send({ message: info.message });
+			res.status(200).send({ message: info.message });
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
 				console.log("user after login in signup", user);
-				res.send({ user: user, message: info.message });
+				res.status(200).send({ user: user, message: info.message });
 			});
 		}
 	})(req, res, next);
@@ -70,11 +71,11 @@ router.get("/signup/:token", (req, res) => {
 		(err, user) => {
 			if (err) {
 				console.log("There was an err", err);
-				res.send({ message: "There was an error." });
+				res.status(500).send({ message: "There was an error." });
 			}
 			if (!user) {
 				console.log("Password token is invalid or expired.");
-				res.send({ message: "Invalid token" });
+				res.status(401).send({ message: "Invalid token" });
 			} else {
 				user.isVerified = true;
 				user.createAccountToken = "";
@@ -82,11 +83,11 @@ router.get("/signup/:token", (req, res) => {
 				user.save()
 					.then(savedUser => {
 						console.log("User verified.");
-						res.send({ message: "User verified." });
+						res.status(200).send({ message: "User verified." });
 					})
 					.catch(err => {
 						console.log("There was an error.");
-						res.send({ message: "There was an error." });
+						res.status(500).send({ message: "There was an error." });
 					});
 			}
 		}
@@ -99,7 +100,7 @@ router.post("/reset-password", (req, res) => {
 	console.log("reset email is ", email);
 	User.findOne({ email: email }, (err, user) => {
 		if (err || user == null) {
-			res.send({ message: "No user specified email." });
+			res.status(404).send({ message: "No user specified email." });
 			return;
 		}
 		// generate token
@@ -137,21 +138,21 @@ router.post("/reset-password", (req, res) => {
 			request
 				.then(result => {
 					console.log(result.body);
-					res.send({
+					res.status(200).send({
 						message:
 							"Please check your email for a link to reset your password."
 					});
 				})
 				.catch(err => {
 					console.log(err);
-					res.send({
+					res.status(500).send({
 						message: "There was an error sending the reset email."
 					});
 				});
 		});
 	}).catch(err => {
 		console.log("Error saving", err);
-		res.send({ message: "Error saving." });
+		res.status(500).send({ message: "Error saving." });
 	});
 });
 
@@ -167,11 +168,11 @@ router.get("/reset-password/:token", (req, res) => {
 		(err, user) => {
 			if (err) {
 				console.log(err);
-				res.send({ message: "There was an error" });
+				res.status(500).send({ message: "There was an error" });
 			}
 			if (!user) {
 				console.log("No user or invalid token");
-				res.send({ message: "Invalid or expired token." });
+				res.status(401).send({ message: "Invalid or expired token." });
 			} else {
 				user.password = User().generateHash(newPassword);
 				user.resetPasswordToken = "";
@@ -201,11 +202,11 @@ router.get("/reset-password/:token", (req, res) => {
 						request
 							.then(result => {
 								console.log(result);
-								res.send({ message: "Password changed." });
+								res.status(200).send({ message: "Password changed." });
 							})
 							.catch(err => {
 								console.log("There was an sending the email.");
-								res.send({
+								res.status(500).send({
 									message:
 										"There was an error sending the email."
 								});

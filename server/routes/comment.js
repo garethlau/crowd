@@ -16,14 +16,14 @@ router.get("/", (req, res) => {
     if (resourceId) {
         Comment.find({resourceId: resourceId, parentId: parentId}, null, {sort: {'updated_at': -1}}, (err, comments) => {
             if (err) {
-                return res.send({message: "There was an error."});
+                return res.status(500).send({message: "There was an error."});
             }
-            return res.send({comments: comments});
+            return res.status(200).send({comments: comments});
         });
     }
     else {
         // missing resource id
-        return res.send({message: "Missing ID."});
+        return res.status(400).send({message: "Missing ID."});
     }
 });
 
@@ -32,12 +32,12 @@ router.get("/", (req, res) => {
 // post comment (content, user, id of the resource)
 router.post("/", (req, res) => {
     if (!req.user) {
-        return res.send({message: "You must be logged in to comment."});
+        return res.status(401).send({message: "You must be logged in to comment."});
     }
     const resourceId = req.query.id;
     const parentId = req.query.parentId || null;
     if (!resourceId) {
-        return res.send({message: "Missing ID."});
+        return res.status(400).send({message: "Missing ID."});
     }
     // create comment 
     let comment = new Comment({
@@ -56,11 +56,11 @@ router.post("/", (req, res) => {
         .save()
         .then(savedComment => {
             console.log(savedComment);
-            return res.send({message: "Comment added."});
+            return res.status(200).send({message: "Comment added."});
         })
         .catch(err => {
             console.log(err)
-            return res.send({message: "Error adding comment."});
+            return res.status(500).send({message: "Error adding comment."});
         });
 });
 
@@ -74,21 +74,21 @@ router.put("/", (req, res) => {
     const commentId = req.query.commentId;
     console.log(commentId);
     if (!commentId) {
-        return res.send({message: "Missing ID."});
+        return res.status(400).send({message: "Missing ID."});
     }
     if (!req.user) {
-        return res.send({message: "You must be logged in."});
+        return res.status(401).send({message: "You must be logged in."});
     }
     Comment.findOneAndUpdate({_id: commentId, 'author.id': req.user._id}, {
         content: req.body.content
     }, (err, comment) => {
         if (err) {
-            return res.send({message: "There was an error."});
+            return res.status(500).send({message: "There was an error."});
         }
         if (!comment) {
-            return res.send({message: "Could not find comment."});
+            return res.status(404).send({message: "Could not find comment."});
         }
-        return res.send({message: "Comment updated."});
+        return res.status(200).send({message: "Comment updated."});
     });    
 });
 
