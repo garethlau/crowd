@@ -59,32 +59,21 @@ export default {
         login() {
             let email = this.email.toLowerCase();
             console.log(email, this.password);
-            const data = {
-                email: email,
-                password: this.password
-            };
             authService
-                .login(data)
+                .login(email, this.password)
                 .then(res => {
-                    if (res.data.message == 'User does not exist.') {
-                        this.toast(res.data.message, 'is-danger', 3000);
-                    } else if (res.data.message == 'Incorrect password.') {
-                        this.danger(res.data.message, 'is-danger', 3000);
-                    } else {
-                        // res.data.message = "Logged in."
-                        this.toast(res.data.message, 'is-success', 2000);
-                        setTimeout(() => {
-                            if (!this.redirect) {
-                                this.$router.push('/');
-                            } else {
-                                this.$router.push(this.redirect);
-                            }
-                        }, 1000);
-                    }
+                    // the only case that gets resolved is if the user successfully logs in
+                    this.toast(res, 'is-success', 2000);
+                    setTimeout(() => {
+                        if (!this.redirect) {
+                            this.$router.push('/');
+                        } else {
+                            this.$router.push(this.redirect);
+                        }
+                    }, 1000);
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.danger('There was an error. Please try again later.');
+                    this.toast(err, 'is-danger', 3000);
                 });
         },
         toast(message, type, duration) {

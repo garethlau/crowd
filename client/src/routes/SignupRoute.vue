@@ -70,7 +70,6 @@
 <script>
 const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
 import AuthService from '../services/AuthService';
-import { store } from '../store';
 const authService = new AuthService();
 
 export default {
@@ -111,50 +110,28 @@ export default {
                 // one of the fields is incorrect, don't continue
                 return;
             }
-            let email = this.email.toLowerCase();
-            // create user object
-            const user = {
-                email: email,
-                password: this.password,
-                firstName: this.firstName,
-                lastName: this.lastName,
-                classes: this.classes
-            };
-            // console.log(user);
             // signup
             authService
-                .signup(user)
+                .signup(
+                    this.email.toLowerCase(),
+                    this.password,
+                    this.firstName,
+                    this.lastName,
+                    this.classes
+                )
                 .then(res => {
-                    // console.log('mesage after signup', res.data.message);
-                    if (res.data.message == 'Email already is being used.') {
-                        // show an error on the label
-                        this.toast(res.data.message, 'is-danger', 3000);
-                    } else if (res.data.message == 'Error saving user.') {
-                        // an error hapened on our backend
-                        this.toast(res.data.message, 'is-danger', 3000);
-                    } else {
-                        // sign up went well, user needs to verify the email
-                        // res.data.message == "User signed up"
-                        // indicate to the user that they need to verify their account
-                        this.toast(
-                            'Account created. Please verify your email.',
-                            'is-success',
-                            2000
-                        );
-                        // set the global user
-                        // console.log('signup user!!!', res.data.user);
-                        store.setUser(res.data.user);
-                        // redirect
-                        setTimeout(() => {
-                            this.$router.push('/');
-                        }, 1000);
-                    }
+                    // sign up went well, user needs to verify the email
+                    // res.data.message == "User signed up"
+                    // indicate to the user that they need to verify their account
+                    this.toast(res, 'is-success', 2000);
+                    // redirect
+                    setTimeout(() => {
+                        this.$router.push('/');
+                    }, 1000);
                 })
                 .catch(err => {
                     // flash warning
-                    if (err) {
-                        this.toast('There was an error', 'is-danger', 3000);
-                    }
+                    this.toast(err, 'is-danger', 3000);
                 });
         },
         validateEmail() {
