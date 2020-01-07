@@ -34,12 +34,10 @@ export default {
             commentService
                 .newComment(this.text, this.resourceId)
                 .then(res => {
-                    console.log('res in compose is', res);
                     this.text = '';
-                    this.toast('Comment added.', 'is-success', 2000);
+                    this.toast(res, 'is-success', 2000);
                 })
                 .catch(err => {
-                    console.log(err);
                     this.toast(err, 'is-danger', 3000);
                 });
         },

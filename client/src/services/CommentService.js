@@ -18,10 +18,13 @@ export default class CommentService {
             axios
                 .get(base, { params: params })
                 .then(res => {
-                    resolve(res);
+                    if (res.status == 200) {
+                        resolve(res);
+                    }
+                    reject('There was an error.');
                 })
-                .catch(err => {
-                    reject(err);
+                .catch(() => {
+                    reject('There was an error.');
                 });
         });
     }
@@ -52,15 +55,22 @@ export default class CommentService {
                     config
                 })
                 .then(res => {
-                    console.log(res);
-                    if (res.data.message == "You must be logged in to comment.") {
-                        reject(res.data.message);
+                    if (res.status == 200) {
+                        resolve('Comment added.');
                     }
-                    resolve(res);
+                    // catch other statuses
+                    reject('There was an error.');
                 })
                 .catch(err => {
-                    console.log(err);
-                    reject(err);
+                    if (err.response.status == 400) {
+                        // Missing resource id
+                        reject('There was an error');
+                    } else if (err.response.status == 401) {
+                        reject('You must be logged in to comment.');
+                    } else if (err.response.status == 500) {
+                        reject('There was an error.');
+                    }
+                    reject('There was an error.');
                 });
         });
     }

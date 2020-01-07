@@ -122,6 +122,7 @@ export default {
         launchResourceModal(resource) {
             console.log(resource);
             this.resourceModalProps['courseCode'] = this.courseCode;
+            this.resourceModalProps['resource'] = resource;
             commentService
                 .getComments(resource._id, null)
                 .then(res => {
@@ -133,10 +134,8 @@ export default {
                 .catch(err => {
                     console.log(err);
                     this.resourceModalProps['comments'] = [];
-                    this.resourceModalProps['errMsg'] =
-                        'Error loading comments.';
+                    this.resourceModalProps['errMsg'] = err;
                 });
-            this.resourceModalProps['resource'] = resource;
         },
         closeModal() {
             // close the modal

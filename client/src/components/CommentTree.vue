@@ -59,6 +59,7 @@ export default {
                 this.nested = res.data.comments;
             })
             .catch(err => {
+                // There was an error fetching comments
                 console.log(err);
             });
     }
