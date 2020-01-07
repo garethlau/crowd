@@ -163,7 +163,6 @@ export default {
         resourceService
             .getResources(this.courseCode)
             .then(res => {
-                console.log('res is', res);
                 this.resources = res.data.resources;
             })
             .catch(err => {
