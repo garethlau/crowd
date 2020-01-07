@@ -18,14 +18,20 @@ router.get("/current", (req, res) => {
 // login
 router.post("/login", (req, res, next) => {
 	passport.authenticate("local-login", (err, user, info) => {
-		if (err) return next(err);
+		if (err) {
+			return next(err);
+		}
 		if (!user) {
+			console.log("no user", info);
+			if (info.message == "Incorrect password.") {
+				return res.status(400).send({message: info.message});
+			}
 			// user was not found
-			res.status(404).send({ message: info.message });
+			return res.status(404).send({ message: info.message });
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
-				res.status(200).send({ user: user, message: info.message });
+				return res.status(200).send({ user: user, message: info.message });
 			});
 		}
 	})(req, res, next);
@@ -47,8 +53,14 @@ router.post("/signup", (req, res, next) => {
 			return next(err);
 		}
 		if (!user) {
-			// a user with the same email already exists
-			res.status(200).send({ message: info.message });
+			if (info.message == "Email already being used.") {
+				// a user with the same email already exists
+				res.status(409).send({ message: info.message });
+			}
+			else {
+				// Error saving the user
+				res.status(500).send({message: info.message});
+			}
 		} else {
 			req.login(user, err => {
 				if (err) return next(err);
