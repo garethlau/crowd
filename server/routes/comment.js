@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
     const parentId = req.query.parentId || null;    // if the parentId is null, then we are looking for top level comments
 
     if (resourceId) {
-        Comment.find({resourceId: resourceId, parentId: parentId}, (err, comments) => {
+        Comment.find({resourceId: resourceId, parentId: parentId}, null, {sort: {'updated_at': -1}}, (err, comments) => {
             if (err) {
                 return res.send({message: "There was an error."});
             }
