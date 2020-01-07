@@ -72,7 +72,8 @@
                 :active.sync="isModalActive"
                 has-modal-card
                 full-screen
-                :can-cancel="false"
+                :can-cancel="['escape', 'x', 'outside']"
+                scroll="keep"
             >
                 <ResourceModal
                     v-bind:props="resourceModalProps"
@@ -120,6 +121,7 @@ export default {
         },
         launchResourceModal(resource) {
             console.log(resource);
+            this.resourceModalProps['courseCode'] = this.courseCode;
             commentService
                 .getComments(resource._id, null)
                 .then(res => {
