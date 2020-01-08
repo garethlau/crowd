@@ -1,21 +1,34 @@
 <template>
-    <div class="tile is-child box">
+    <div class="is-child box">
         <article>
             <div class="columns">
                 <div class="column is-1 vote-container">
                     <div v-on:click="upvote" class="clickable">
-                        <b-icon pack="fas" icon="caret-square-up"> </b-icon>
+                        <b-icon pack="far" icon="caret-square-up"> </b-icon>
                     </div>
                     <div>
-                        {{ data.upvotes }}
+                        0
                     </div>
                     <div v-on:click="downvote" class="clickable">
-                        <b-icon pack="fas" icon="caret-square-down"> </b-icon>
+                        <b-icon pack="far" icon="caret-square-down"> </b-icon>
                     </div>
                 </div>
                 <div class="column is-8" v-on:click="launchResourceModal">
                     <div>
-                        <p>{{ data.datePosted }} - {{ data.author }}</p>
+                        <p>
+                            Posted by
+                            {{
+                                capitalizeFirst(data.author.firstName) +
+                                    ' ' +
+                                    capitalizeFirst(data.author.lastName)
+                            }}
+                            <span v-if="uploadedDate == modifiedDate">
+                                {{ uploadedDate }}
+                            </span>
+                            <span v-else>
+                                {{ modifiedDate }}
+                            </span>
+                        </p>
                     </div>
                     <div>
                         <p class="title">
@@ -37,9 +50,11 @@
 </template>
 
 <script>
+import stringMixin from '../mixins/stringMixin';
 export default {
     name: 'ResourceTile',
     props: ['data'],
+    mixins: [stringMixin],
     data() {
         return {
             favourite: false
@@ -47,6 +62,7 @@ export default {
     },
     methods: {
         upvote: function() {
+            console.log(this.data);
             // console.log('Upvote');
             this.$emit('clickedDownvote');
         },
@@ -65,6 +81,16 @@ export default {
     },
     mounted() {
         console.log(this.data);
+    },
+    computed: {
+        uploadedDate() {
+            let date = new Date(this.data.created_at);
+            return date.toLocaleString();
+        },
+        modifiedDate() {
+            let date = new Date(this.data.updated_at);
+            return date.toLocaleString();
+        }
     }
 };
 </script>
@@ -77,5 +103,14 @@ export default {
     &:hover {
         cursor: pointer;
     }
+}
+.is-1 {
+    width: 25px;
+    padding: 0px;
+    padding-top: 10px;
+}
+.tile {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 </style>
