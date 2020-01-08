@@ -118,7 +118,7 @@ export default class CommentService {
             let params = {};
             params['id'] = resourceId;
             if (parentId) {
-                params[parentId] = parentId;
+                params['parentId'] = parentId;
             }
             let data = {
                 content: content
