@@ -23,10 +23,25 @@
                     <h1 class="title">
                         {{ props.resource.title }}
                     </h1>
-
-                    <div class="subtitle">
-                        {{ props.resource.content.data }}
-                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container" :style="resourceContainer">
+                <div v-if="props.resource.content.type == 'video'">
+                    <VideoResource :data="props.resource.content.data" />
+                </div>
+                <div v-else-if="props.resource.content.type == 'link'">
+                    Link
+                    {{ props.resource.content.data }}
+                </div>
+                <div v-else-if="props.resource.content.type == 'text'">
+                    Text
+                    {{ props.resource.content.data }}
+                </div>
+                <div v-else class="subtitle">
+                    No format???
+                    {{ props.resource.content.data }}
                 </div>
             </div>
         </section>
@@ -96,13 +111,14 @@ import stringMixin from '../mixins/stringMixin';
 import CommentTree from './CommentTree';
 import ComposeComment from './ComposeComment';
 import CommentService from '../services/CommentService';
+import VideoResource from './VideoResource';
 const commentService = new CommentService();
 
 export default {
     name: 'ResourceModal',
     props: ['props'],
     mixins: [stringMixin],
-    components: { CommentTree, ComposeComment },
+    components: { CommentTree, ComposeComment, VideoResource },
     data() {
         return {
             showComments: true,
@@ -132,6 +148,14 @@ export default {
     mounted() {
         console.log(this.props);
         this.setComments();
+    },
+    computed: {
+        resourceContainer() {
+            if (this.props.resource.content.type == 'video') {
+                return 'min-height: 500px';
+            }
+            return 'min-height: 200px';
+        }
     }
 };
 </script>
