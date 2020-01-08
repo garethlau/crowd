@@ -32,8 +32,9 @@
         </section>
         <section>
             <div class="container">
-                <ComposeComment 
+                <ComposeComment
                     :resourceId="props.resource._id"
+                    @commentAdded="refreshComments"
                 />
             </div>
         </section>
@@ -42,11 +43,12 @@
             <div class="container" v-if="showComments">
                 <div>
                     <CommentTree
-                        v-for="comment in props.comments"
+                        v-for="comment in this.comments"
                         :key="comment._id"
                         :comment="comment"
                         :resourceId="comment.resourceId"
                         :offset="0"
+                        ref="commentTree"
                     />
                 </div>
             </div>
@@ -93,6 +95,8 @@ in each Comment.vue file, call getComments to get the children of this current c
 import stringMixin from '../mixins/stringMixin';
 import CommentTree from './CommentTree';
 import ComposeComment from './ComposeComment';
+import CommentService from '../services/CommentService';
+const commentService = new CommentService();
 
 export default {
     name: 'ResourceModal',
@@ -101,16 +105,33 @@ export default {
     components: { CommentTree, ComposeComment },
     data() {
         return {
-            showComments: true
+            showComments: true,
+            comments: []
         };
     },
     methods: {
         toggleComments() {
             this.showComments = !this.showComments;
+        },
+        refreshComments() {
+            console.log('REFRESH COMMENTS');
+            this.setComments();
+        },
+        setComments() {
+            commentService
+                .getComments(this.props.resource._id, null)
+                .then(res => {
+                    this.comments = res.data.comments;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.comments = [];
+                });
         }
     },
     mounted() {
         console.log(this.props);
+        this.setComments();
     }
 };
 </script>
