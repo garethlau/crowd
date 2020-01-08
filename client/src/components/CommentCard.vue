@@ -1,7 +1,18 @@
 <template>
-    <div :style="indent" class="container">
-        <div>
-            <div class="uploaded_by">
+    <div :style="indent" class="container columns">
+        <div class="column is-1 votes-container">
+            <div v-on:click="upvote" class="clickable">
+                <b-icon pack="far" icon="caret-square-up"> </b-icon>
+            </div>
+            <div>
+                {{ this.voteCount }}
+            </div>
+            <div v-on:click="downvote" class="clickable">
+                <b-icon pack="far" icon="caret-square-down"> </b-icon>
+            </div>
+        </div>
+        <div class="column">
+            <div class="uploaded-by">
                 <b-icon pack="far" icon="user" size="is-small"> </b-icon>
 
                 {{
@@ -63,21 +74,68 @@
 
 <script>
 import stringMixin from '../mixins/stringMixin';
+import notificationMixin from '../mixins/notificationMixin';
+import CommentService from '../services/CommentService.js';
+const commentService = new CommentService();
 
 export default {
     name: 'CommentCard',
     props: ['comment', 'offset', 'hasComments'],
-    mixins: [stringMixin],
+    mixins: [stringMixin, notificationMixin],
     data() {
         return {
-            showNested: false
+            showNested: false,
+            voteCount: 0
         };
     },
     methods: {
         toggleNested() {
             this.showNested = !this.showNested;
             this.$emit('toggleNested');
+        },
+        upvote() {
+            commentService
+                .upvote(this.comment._id)
+                .then(res => {
+                    if (res.status == 200) {
+                        // refresh vote count
+                        this.getVoteCount(this.comment._id);
+                    } else {
+                        this.toast('There was en error.', 'is-danger', 3000);
+                    }
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger', 3000);
+                });
+        },
+        downvote() {
+            commentService
+                .downvote(this.comment._id)
+                .then(res => {
+                    if (res.status == 200) {
+                        // refrsh vote count
+                        this.getVoteCount(this.comment._id);
+                    } else {
+                        this.toast('There was an error.', 'is-danger', 3000);
+                    }
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger', 3000);
+                });
+        },
+        getVoteCount(commentId) {
+            commentService
+                .getVoteCount(commentId)
+                .then(count => {
+                    this.voteCount = count;
+                })
+                .catch(() => {
+                    this.voteCount = 0;
+                });
         }
+    },
+    created() {
+        this.getVoteCount(this.comment._id);
     },
     computed: {
         indent() {
@@ -96,7 +154,7 @@ export default {
 <style lang="scss" scoped>
 @import '../styles/themes/western.scss';
 
-.uploaded_by {
+.uploaded-by {
     display: inline;
 }
 .container {
@@ -108,5 +166,13 @@ export default {
 }
 .replyIcon {
     margin-right: 5px;
+}
+.votes-container {
+    text-align: center;
+}
+.is-1 {
+    width: 25px;
+    padding: 0px;
+    padding-top: 12px;
 }
 </style>
