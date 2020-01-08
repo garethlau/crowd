@@ -5,8 +5,16 @@
                 :comment="comment"
                 :offset="offset"
                 @toggleNested="toggleNested"
+                @composeReply="composeReply"
                 :hasComments="this.nested.length != 0"
             />
+            <div v-if="showComposeReply">
+                <ComposeReply
+                    :parentId="this.comment._id"
+                    :resourceId="this.comment.resourceId"
+                    @replyCreated="replyCreated"
+                />
+            </div>
         </section>
 
         <section>
@@ -26,6 +34,7 @@
 <script>
 import CommentCard from './CommentCard';
 import stringMixin from '../mixins/stringMixin';
+import ComposeReply from './ComposeReply';
 import CommentService from '../services/CommentService';
 const commentService = new CommentService();
 
@@ -33,14 +42,26 @@ export default {
     name: 'CommentTree',
     props: ['comment', 'resourceId', 'offset'],
     mixins: [stringMixin],
-    components: { CommentCard },
+    components: { CommentCard, ComposeReply },
     data() {
         return {
             nested: [],
-            showNested: false
+            showNested: false,
+            showComposeReply: false
         };
     },
     methods: {
+        composeReply() {
+            this.showComposeReply = !this.showComposeReply;
+        },
+        replyCreated() {
+            // hide reply composer
+            this.showComposeReply = false;
+            // refresh tree
+            this.setComments();
+            // show nested to see the newly added reply
+            this.showNested = true;
+        },
         toggleNested() {
             this.showNested = !this.showNested;
         },
