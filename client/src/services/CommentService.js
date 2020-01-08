@@ -54,7 +54,6 @@ export default class CommentService {
     }
 
     getVoteCount(commentId) {
-        console.log('got ocmmentId in votecount', commentId);
         return new Promise((resolve, reject) => {
             let url = base + '/voting';
             let params = {
@@ -64,7 +63,6 @@ export default class CommentService {
                 .get(url, { params: params })
                 .then(res => {
                     if (res.status == 200) {
-                        console.log(res);
                         resolve(res.data.count);
                     }
                     reject('There was an error.');
