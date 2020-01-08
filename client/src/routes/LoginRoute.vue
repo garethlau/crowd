@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import notificationMixin from '../mixins/notificationMixin';
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
 
@@ -50,6 +51,7 @@ export default {
             redirect: ''
         };
     },
+    mixins: [notificationMixin],
     mounted() {
         console.log('inside loginroute');
         console.log(this.$route);
@@ -75,13 +77,6 @@ export default {
                 .catch(err => {
                     this.toast(err, 'is-danger', 3000);
                 });
-        },
-        toast(message, type, duration) {
-            this.$buefy.toast.open({
-                message: message,
-                duration: duration,
-                type: type
-            });
         }
     }
 };

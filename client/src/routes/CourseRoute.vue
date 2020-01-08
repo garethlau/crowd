@@ -92,6 +92,7 @@
  * as props to a Resource component. This means we also need to make onChange handlers for upvotes, and comments to keep track of these changes
  *
  */
+import notificationMixin from '../mixins/notificationMixin';
 import CreateButton from '../components/CreateButton';
 import ResourceTile from '../components/ResourceTile';
 import ResourceModal from '../components/ResourceModal';
@@ -111,14 +112,8 @@ export default {
             resourceModalProps: {}
         };
     },
+    mixins: [notificationMixin],
     methods: {
-        toast(message, type, duration) {
-            this.$buefy.toast.open({
-                message: message,
-                duration: duration,
-                type: type
-            });
-        },
         launchResourceModal(resource) {
             console.log(resource);
             this.resourceModalProps['courseCode'] = this.courseCode;

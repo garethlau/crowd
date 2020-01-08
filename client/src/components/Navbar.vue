@@ -132,6 +132,7 @@
 </template>
 
 <script>
+import notificationMixin from '../mixins/notificationMixin';
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
 
@@ -144,6 +145,7 @@ export default {
             user: {}
         };
     },
+    mixins: [notificationMixin],
     mounted() {
         authService
             .isAuth()
@@ -185,13 +187,6 @@ export default {
                     console.log(err);
                     this.toast('Error logging out.', 'is-danger', 3000);
                 });
-        },
-        toast(message, type, duration) {
-            this.$buefy.toast.open({
-                message: message,
-                duration: duration,
-                type: type
-            });
         }
     }
 };

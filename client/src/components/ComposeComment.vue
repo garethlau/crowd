@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import notificationMixin from '../mixins/notificationMixin';
 import CommentService from '../services/CommentService';
 const commentService = new CommentService();
 
@@ -28,6 +29,7 @@ export default {
         };
     },
     props: ['resourceId'],
+    mixins: [notificationMixin],
     methods: {
         addComment() {
             console.log(this.text);
@@ -40,13 +42,6 @@ export default {
                 .catch(err => {
                     this.toast(err, 'is-danger', 3000);
                 });
-        },
-        toast(message, type, duration) {
-            this.$buefy.toast.open({
-                message: message,
-                duration: duration,
-                type: type
-            });
         }
     }
 };

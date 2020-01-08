@@ -70,6 +70,7 @@
 <script>
 const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
 import AuthService from '../services/AuthService';
+import notificationMixin from '../mixins/notificationMixin';
 const authService = new AuthService();
 
 export default {
@@ -91,6 +92,7 @@ export default {
             lastNameMessage: ''
         };
     },
+    mixins: [notificationMixin],
     methods: {
         // get dropdown tags based on current user input
         getFilteredClasses(text) {
@@ -165,13 +167,6 @@ export default {
                 this.lastNameMessage = '';
                 this.lastNameStatus = 'is-success';
             }
-        },
-        toast(message, type, duration) {
-            this.$buefy.toast.open({
-                message: message,
-                duration: duration,
-                type: type
-            });
         }
     }
 };
