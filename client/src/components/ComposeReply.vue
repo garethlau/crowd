@@ -33,7 +33,6 @@ export default {
     methods: {
         submitReply() {
             console.log(this.text);
-            console.log("resource", this.resourceId, "parent", this.parentId);
             commentService
                 .newComment(this.text, this.resourceId, this.parentId)
                 .then(res => {
@@ -49,6 +48,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
