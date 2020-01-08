@@ -53,16 +53,13 @@ router.post("/", (req, res) => {
     },
     content: req.body.content
   });
-  console.log(comment);
   // save comment
   comment
     .save()
     .then(savedComment => {
-      console.log(savedComment);
       return res.status(200).send({ message: "Comment added." });
     })
     .catch(err => {
-      console.log(err);
       return res.status(500).send({ message: "Error adding comment." });
     });
 });
@@ -70,11 +67,31 @@ router.post("/", (req, res) => {
 // delete comment (id, user)
 router.delete("/", (req, res) => {});
 
+// get upvote / downvote count
+router.get("/voting", (req, res) => {
+  const commentId = req.query.commentId;
+  Vote.find(
+    {
+      parentId: commentId
+    },
+    (err, votes) => {
+      if (err) {
+        return res.status(500).send({ message: "There was an error." });
+      }
+      // votes is an array
+      let count = 0;
+      if (votes.length != 0) {
+        count = votes.reduce((acc, curr) => {
+          return curr.isUpvote ? ++acc : --acc
+        }, 0);
+      }
+      return res.status(200).send({ message: "Votes counted.", count: count });
+    }
+  );
+});
+
 // upvote, downvote, or reply to a comment
 /*
-
-api/v1/comment?id=awdadwad&vote=up
-
 1. check if the user is logged in
 2. Check Votes for votes with parentId = commentId and author = req.user._id
     if already voted, dont do anything
@@ -82,68 +99,77 @@ api/v1/comment?id=awdadwad&vote=up
     else vote by whatever
 */
 router.post("/voting", (req, res) => {
-  const commentId = req.query.commentId;
-  const type = req.query.vote;  // 'up' || 'dn'
+  const commentId = req.body.commentId;
+  const type = req.body.vote; // 'up' || 'dn'
   if (!req.user) {
-    return res.status(401).send({message: "You must be logged in."});
+    return res.status(401).send({ message: "You must be logged in." });
+  }
+  if (!commentId) {
+    return res.status(400).send({ message: "Missing ID." });
   }
   const userId = req.user._id;
-  Vote.find({
-    parentId: commentId,
-    'author.id': userId
-  }, (err, documents) => {
-    if (err) {
-      return res.status(500).send({message: "There was an error."});
-    }
-    if (documents.length == 0) {
-      console.log("New vote");
-      // new vote
-      let newVote = new Vote({
-        parentId: commentId,
-        author: {
-          firstName: req.user.firstName,
-          lastName: req.user.lastName,
-          id: userId
-        },
-        isUpvote: type == 'up' ? true : false
-      });
-      newVote.save().then(savedVote => {
-        // successfully saved new vote
-        return res.status(200).send({message: "Voted."});
-      }).catch(err => {
-        // error saving new vote
-        return res.status(500).send({message: "There was an error."});
-      });
-    }
-    else {
-      console.log("already voted");
-
-      // already voted
-      let vote = documents[0];
-      if ((vote.isUpvote && type == 'up') || (!vote.isUpvote && type == 'dn') ) {
-        // user already upvoted or downvoted, don't do anything
-        return res.status(200).send({message: "Already voted."});
+  Vote.find(
+    {
+      parentId: commentId,
+      "author.id": userId
+    },
+    (err, documents) => {
+      if (err) {
+        return res.status(500).send({ message: "There was an error." });
       }
-      else {
-        // toggle
-        vote.isUpvote = !vote.isUpvote;
-        // save changes
-        vote.save().then(savedVote => {
-          // successfully saved vote change
-          return res.status(200).send({messaeg: "Vote changed."});
-        }).catch(err => {
-          // error saving vote change
-          return res.status(500).send({message: "There was an error."});
-        })
+      if (documents.length == 0) {
+        // new vote
+        let newVote = new Vote({
+          parentId: commentId,
+          author: {
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            id: userId
+          },
+          isUpvote: type == "up" ? true : false
+        });
+        newVote
+          .save()
+          .then(savedVote => {
+            // successfully saved new vote
+            return res.status(200).send({ message: "Voted." });
+          })
+          .catch(err => {
+            // error saving new vote
+            return res.status(500).send({ message: "There was an error." });
+          });
+      } else {
+        // already voted
+        let vote = documents[0];
+        if (
+          (vote.isUpvote && type == "up") ||
+          (!vote.isUpvote && type == "dn")
+        ) {
+          // user already upvoted or downvoted, don't do anything
+          return res.status(200).send({ message: "Already voted." });
+        } else {
+          // toggle
+          vote.isUpvote = !vote.isUpvote;
+          // save changes
+          vote
+            .save()
+            .then(savedVote => {
+              // successfully saved vote change
+              return res.status(200).send({ message: "Vote changed." });
+            })
+            .catch(err => {
+              // error saving vote change
+              return res.status(500).send({ message: "There was an error." });
+            });
+        }
       }
     }
-  })
+  );
 });
 
 // edit comment (id, user)
 router.put("/", (req, res) => {
   const commentId = req.query.commentId;
-  console.log(commentId);
   if (!commentId) {
     return res.status(400).send({ message: "Missing ID." });
   }
