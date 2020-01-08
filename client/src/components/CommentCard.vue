@@ -63,10 +63,12 @@
                         outlined
                         icon-left="comment"
                         size="is-small"
+                        @click="$emit('composeReply')"
                     >
                         Reply
                     </b-button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -85,7 +87,7 @@ export default {
     data() {
         return {
             showNested: false,
-            voteCount: 0
+            voteCount: 0,
         };
     },
     methods: {
