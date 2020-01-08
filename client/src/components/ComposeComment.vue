@@ -38,6 +38,7 @@ export default {
                 .then(res => {
                     this.text = '';
                     this.toast(res, 'is-success', 2000);
+                    this.$emit('commentAdded');
                 })
                 .catch(err => {
                     this.toast(err, 'is-danger', 3000);
