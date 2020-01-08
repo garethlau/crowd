@@ -64,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <CreateButton v-bind:courseCode="courseCode"/>
+                <CreateButton v-bind:courseCode="courseCode" />
             </div>
         </section>
         <section>
@@ -97,9 +97,7 @@ import CreateButton from '../components/CreateButton';
 import ResourceTile from '../components/ResourceTile';
 import ResourceModal from '../components/ResourceModal';
 import ResourceService from '../services/ResourceService';
-import CommentService from '../services/CommentService';
 const resourceService = new ResourceService();
-const commentService = new CommentService();
 
 export default {
     name: 'CourseRoute',
@@ -118,19 +116,7 @@ export default {
             console.log(resource);
             this.resourceModalProps['courseCode'] = this.courseCode;
             this.resourceModalProps['resource'] = resource;
-            commentService
-                .getComments(resource._id, null)
-                .then(res => {
-                    this.resourceModalProps['comments'] = res.data.comments;
-                    this.resourceModalProps['errMsg'] = '';
-                    console.log(this.resourceModalProps.comments);
-                    this.isModalActive = true;
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.resourceModalProps['comments'] = [];
-                    this.resourceModalProps['errMsg'] = err;
-                });
+            this.isModalActive = true;
         },
         closeModal() {
             // close the modal
