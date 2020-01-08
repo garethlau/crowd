@@ -28,7 +28,7 @@
                 <span v-else>
                     <b-icon pack="far" icon="clock" size="is-small"> </b-icon>
 
-                    {{ comment.updated_at }}
+                    {{ modifiedDate }}
                 </span>
             </div>
             <div>
@@ -147,6 +147,10 @@ export default {
         },
         uploadedDate() {
             let date = new Date(this.comment.created_at);
+            return date.toLocaleString();
+        },
+        modifiedDate() {
+            let date = new Date(this.comment.updated_at);
             return date.toLocaleString();
         }
     }
