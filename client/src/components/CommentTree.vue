@@ -43,25 +43,25 @@ export default {
     methods: {
         toggleNested() {
             this.showNested = !this.showNested;
+        },
+        setComments() {
+            commentService
+                .getComments(this.$props.resourceId, this.$props.comment._id)
+                .then(res => {
+                    // console.log('got comments', res.data.comments);
+                    if (res.data.comments.length == 0) {
+                        // console.log('NO COMMENTS');
+                    }
+                    this.nested = res.data.comments;
+                })
+                .catch(err => {
+                    // There was an error fetching comments
+                    console.log(err);
+                });
         }
     },
     created() {
-        console.log(this.$props.resourceId);
-        console.log(this.$props.comment);
-        commentService
-            .getComments(this.$props.resourceId, this.$props.comment._id)
-            .then(res => {
-                console.log('got comments', res.data.comments);
-                if (res.data.comments.length == 0) {
-                    console.log('NO COMMENTS');
-                }
-
-                this.nested = res.data.comments;
-            })
-            .catch(err => {
-                // There was an error fetching comments
-                console.log(err);
-            });
+        this.setComments();
     }
 };
 </script>
