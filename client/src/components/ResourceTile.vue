@@ -36,16 +36,16 @@
                 </div>
             </div>
             <div class="column is-1 actions-container">
-                <div v-if="favourite" class="clickable" v-on:click="fav">
-                    <b-tooltip label="Add to favourites" position="is-left">
-                        <b-icon pack="fas" icon="star"> </b-icon>
-                    </b-tooltip>
-                </div>
-                <div v-else>
+                <div v-if="fav" class="clickable" v-on:click="unFav">
                     <b-tooltip
                         label="Remove from favourites"
                         position="is-left"
                     >
+                        <b-icon pack="fas" icon="star"> </b-icon>
+                    </b-tooltip>
+                </div>
+                <div v-else class="clickable" v-on:click="makeFav">
+                    <b-tooltip label="Add to favourites" position="is-left">
                         <b-icon
                             pack="far"
                             class="clickable fade-color fade"
@@ -91,7 +91,7 @@ export default {
     mixins: [stringMixin, notificationMixin],
     data() {
         return {
-            favourite: false,
+            fav: false,
             count: 0
         };
     },
@@ -130,8 +130,48 @@ export default {
                 this.count = count;
             });
         },
-        fav: function() {
-            console.log('fav resource', this.data._id);
+        checkFav() {
+            console.log('checking VOTE');
+            resourceService
+                .getFavs()
+                .then(favs => {
+                    console.log('favs', favs);
+                    if (favs.indexOf(this.data._id) != -1) {
+                        this.fav = true;
+                    } else this.fav = false;
+                })
+                .catch(err => {
+                    console.log('err fav', err);
+                });
+        },
+        unFav() {
+            resourceService
+                .removeFav(this.data._id)
+                .then(() => {
+                    this.fav = false;
+                    // refresh status
+                    this.checkFav();
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger');
+                    // refresh status
+                    this.checkFav();
+                });
+        },
+        makeFav() {
+            resourceService
+                .makeFav(this.data._id)
+                .then(() => {
+                    console.log('made fav');
+                    this.fav = true; // should be true
+                    // refresh fav status just to make sure
+                    this.checkFav();
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger', 3000);
+                    // check the status of fav
+                    this.checkFav();
+                });
         }
     },
     mounted() {
@@ -139,6 +179,7 @@ export default {
     },
     created() {
         this.getVoteCount();
+        this.checkFav();
     },
     computed: {
         uploadedDate() {
