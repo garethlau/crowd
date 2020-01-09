@@ -1,18 +1,19 @@
 import axios from 'axios';
 const base = '/api/v1/resource/';
 
+const config = {
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
 const vote = (resourceId, type) => {
     return new Promise((resolve, reject) => {
         const url = base + 'voting';
         const data = {
             resourceId: resourceId,
             type: type
-        };
-        let config = {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json'
-            }
         };
         // make post request
         axios
@@ -44,6 +45,82 @@ const vote = (resourceId, type) => {
 };
 
 export default class ResourceService {
+    // get list of resourceId's that the user has favourited
+    getFavs() {
+        return new Promise((resolve, reject) => {
+            axios
+                .get('/api/v1/user/current')
+                .then(res => {
+                    console.log('res in service', res);
+                    if (res.data.user) {
+                        resolve(res.data.user.favs);
+                    } else {
+                        reject('You must be logged in.');
+                    }
+                })
+                .catch(err => {
+                    console.log('err in service', err);
+                    reject('There was an error.');
+                });
+        });
+    }
+
+    /**
+     *
+     * @param {string} resourceId ID of the resource to be added to user's list of favourites
+     */
+    makeFav(resourceId) {
+        return new Promise((resolve, reject) => {
+            const url = '/api/v1/user/fav';
+            const data = {
+                resourceId: resourceId
+            };
+            axios
+                .post(url, data, config)
+                .then(res => {
+                    if (res.status == 200) {
+                        // ok
+                        resolve(res);
+                    }
+                    reject('There was an error.');
+                })
+                .catch(err => {
+                    if (err.response.status == 400) {
+                        reject('Missing information.');
+                    } else if (err.response.status == 401) {
+                        reject('You must be logged in to favourite.');
+                    }
+                    reject('There was an error.');
+                });
+        });
+    }
+
+    /**
+     *
+     * @param {string} resourceId ID of the resource to be removed from the user's list of favourites.
+     */
+    removeFav(resourceId) {
+        return new Promise((resolve, reject) => {
+            const url = '/api/v1/user/fav';
+            const params = {
+                resourceId: resourceId
+            };
+            axios
+                .delete(url, { params: params, config })
+                .then(() => {
+                    resolve('Removed from favourites.');
+                })
+                .catch(err => {
+                    if (err.response.status == 400) {
+                        reject('Missing information.');
+                    } else if (err.response.status == 401) {
+                        reject('You must be logged in.');
+                    }
+                    reject('There was an error.');
+                });
+        });
+    }
+
     /**
      *
      * @param {string} resourceId
@@ -86,12 +163,6 @@ export default class ResourceService {
 
     newResource(data) {
         return new Promise((resolve, reject) => {
-            let config = {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'applicaton/json'
-                }
-            };
             const url = '/api/v1/content/create';
             axios
                 .post(url, data, config)
