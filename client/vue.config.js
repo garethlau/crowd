@@ -14,6 +14,11 @@ module.exports = {
                 ws: true,
                 changeOrigin: true
             },
+            '^/api/v1/resource': {
+                target: 'http://localhost:5000',
+                ws: true,
+                changeOrigin: true
+            },
             '^/foo': {
                 target: '<other_url>'
             }
