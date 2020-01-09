@@ -28,13 +28,7 @@
 
         <template slot="end">
             <b-navbar-item tag="div">
-                <div
-                    class="buttons"
-                    v-if="
-                        Object.entries(this.user).length === 0 &&
-                            this.user.constructor === Object
-                    "
-                >
+                <div class="buttons" v-if="this.user == null">
                     <router-link :to="{ path: '/signup' }">
                         <a class="button is-primary">
                             <strong>Sign up</strong>
@@ -143,36 +137,16 @@ export default {
     data() {
         return {
             navigation: 'profile',
-            user: {}
+            user: null
         };
     },
     mixins: [notificationMixin, stringMixin],
     mounted() {
-        authService
-            .isAuth()
-            .then(res => {
-                // console.log('res in isAuth is');
-                // console.log(res);
-                this.user = res.data.user;
-            })
-            .catch(err => {
-                console.log(err);
-                this.user = {};
-            });
+        this.checkAuth();
     },
     watch: {
         $route() {
-            authService
-                .isAuth()
-                .then(res => {
-                    // console.log('res in isAuth is');
-                    // console.log(res);
-                    this.user = res.data.user;
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.user = {};
-                });
+            this.checkAuth();
         }
     },
     methods: {
@@ -181,12 +155,25 @@ export default {
                 .logout()
                 .then(res => {
                     console.log(res);
-                    this.user = {};
+                    this.user = null;
                     this.toast('Logged out.', 'is-success', 2000);
                 })
                 .catch(err => {
                     console.log(err);
                     this.toast('Error logging out.', 'is-danger', 3000);
+                });
+        },
+        checkAuth() {
+            authService
+                .isAuth()
+                .then(user => {
+                    // console.log('res in isAuth is');
+                    // console.log(res);
+                    this.user = user;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.user = null;
                 });
         }
     }
