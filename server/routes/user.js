@@ -10,6 +10,73 @@ const mailjet = require("node-mailjet").connect(
 	keys.mailjetSecret
 );
 
+
+// remove resource from favourites
+router.delete("/fav", (req, res) => {
+	if (!req.user) {
+	  return res.status(401).send();
+	}
+	const resourceId = req.query.resourceId;
+	if (!resourceId) {
+	  return res.status(400).send();
+	}
+	User.findById(req.uesr._id, (err, user) => {
+	  if (err) {
+		return res.status(404).send();
+	  }
+	  if (!user) {
+		// shouldn't happen
+		return res.status(404).send();
+	  }
+	  // find index of favourited resource
+	  let index = user.favs ? user.favs.indexOf(resourceId) : -1;
+	  if (index != -1) {
+		user.favs.splice(index, 1);
+		user
+		  .save()
+		  .then(() => {
+			return res
+			  .status(200)
+			  .send({ message: "Removed resource from favourites." });
+		  })
+		  .catch(err => {
+			console.log(err);
+			return res.status(500).send();
+		  });
+	  }
+	});
+  });
+  
+  // favourite resource
+  router.post("/fav", (req, res) => {
+	if (!req.user) {
+	  return res.status(401).send();
+	}
+	const resourceId = req.query.resourceId;
+	if (!resourceId) {
+	  return res.status(400).send();
+	}
+	User.findById(req.user._id, (err, user) => {
+	  if (err) {
+		return res.status(404).send();
+	  }
+	  if (!user) {
+		// this shouldn't happen
+		return res.status(500).send();
+	  }
+	  user.favs.push(resourceId);
+	  user
+		.save()
+		.then(savedUser => {
+		  return res.status(200).send({ message: "Added to favourites." });
+		})
+		.catch(err => {
+		  console.log(err);
+		  return res.status(500).send();
+		});
+	});
+  });
+
 // get user data
 router.get("/current", (req, res) => {
 	res.status(200).send({ user: req.user });
