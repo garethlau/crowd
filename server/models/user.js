@@ -12,7 +12,8 @@ const UserSchema = new Schema({
   createAccountToken: String,
   createAccountExpires: String,
   resetPasswordToken: String,
-  resetPasswordExpires: String
+  resetPasswordExpires: String,
+  favs: Array,
 });
 
 UserSchema.methods.generateHash = password => {
