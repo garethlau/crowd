@@ -3,8 +3,8 @@
         <section class="hero is-primary">
             <div class="hero-body">
                 <div class="container">
-                    <h1>
-                        {{ props.courseCode }}
+                    <h1 class="title">
+                        {{ this.courseCode }}
                     </h1>
                 </div>
             </div>
@@ -121,6 +121,7 @@ export default {
     components: { CommentTree, ComposeComment, VideoResource },
     data() {
         return {
+            courseCode: '',
             showComments: true,
             comments: []
         };
@@ -146,7 +147,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.props);
+        this.courseCode = this.$route.params.courseCode;
         this.setComments();
     },
     computed: {
