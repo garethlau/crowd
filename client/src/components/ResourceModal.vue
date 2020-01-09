@@ -1,5 +1,8 @@
 <template>
     <div class="modal-card scrollable">
+        <div class="exit-button clickable" @click="$emit('clickedClose')">
+            <b-icon pack="far" icon="times-circle" type="is-white"> </b-icon>
+        </div>
         <section class="hero is-primary">
             <div class="hero-body">
                 <div class="container">
@@ -144,7 +147,7 @@ export default {
                     console.log(err);
                     this.comments = [];
                 });
-        }
+        },
     },
     mounted() {
         this.courseCode = this.$route.params.courseCode;
@@ -163,6 +166,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '../styles/mixins';
+@import '../styles/global';
 .modal {
     background-color: white;
 }
@@ -176,5 +180,10 @@ export default {
     @include md {
         padding-left: 20px;
     }
+}
+.exit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 </style>
