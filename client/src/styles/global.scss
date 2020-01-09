@@ -1,1 +1,7 @@
 // applies to all components
+@import './themes/western.scss';
+.clickable {
+    &:hover {
+        cursor: pointer;
+    }
+}
