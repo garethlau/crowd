@@ -20,7 +20,7 @@ router.delete("/fav", (req, res) => {
 	if (!resourceId) {
 	  return res.status(400).send();
 	}
-	User.findById(req.uesr._id, (err, user) => {
+	User.findById(req.user._id, (err, user) => {
 	  if (err) {
 		return res.status(404).send();
 	  }
@@ -52,7 +52,7 @@ router.delete("/fav", (req, res) => {
 	if (!req.user) {
 	  return res.status(401).send();
 	}
-	const resourceId = req.query.resourceId;
+	const resourceId = req.body.resourceId;
 	if (!resourceId) {
 	  return res.status(400).send();
 	}
