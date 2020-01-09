@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div>
+          
+           
         <div v-if="resources.length == 0">
             No resources here : I dont like that this shows up no matter what.
             Look into possibly adding a delay or loading animation while when
@@ -12,6 +15,9 @@
                 v-bind:data="resource"
                 @clickedResource="launchResourceModal"
             />
+        </div>
+               <b-loading :is-full-page="false" :active="!loaded">
+            </b-loading>
         </div>
 
         <section>
@@ -45,7 +51,8 @@ export default {
         return {
             isModalActive: false,
             resourceModalProps: {},
-            resources: []
+            resources: null,
+            loaded: false,
         };
     },
     methods: {
@@ -67,11 +74,13 @@ export default {
             .getResources(this.courseCode, this.weekNumber)
             .then(res => {
                 this.resources = res.data.resources;
+                this.loaded = true;
             })
             .catch(err => {
                 console.log('err is', err);
                 this.resources = [];
                 this.toast(err, 'is-danger', 3000);
+                this.loaded = true;
             });
     }
     // #A8A8A8
