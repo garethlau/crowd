@@ -97,7 +97,6 @@ export default {
     },
     methods: {
         upvote() {
-            console.log('upvote resource', this.data._id);
             resourceService
                 .upvote(this.data._id)
                 .then(() => {
@@ -109,7 +108,6 @@ export default {
                 });
         },
         downvote() {
-            console.log('downvote resource', this.data._id);
             resourceService
                 .downvote(this.data._id)
                 .then(() => {
@@ -121,17 +119,14 @@ export default {
                 });
         },
         launchResourceModal() {
-            // console.log('launch resource modal');
             this.$emit('clickedResource', this.data);
         },
         getVoteCount() {
             resourceService.getVotes(this.data._id).then(count => {
-                console.log('getting vote count', count);
                 this.count = count;
             });
         },
         checkFav() {
-            console.log('checking VOTE');
             resourceService
                 .getFavs()
                 .then(favs => {
@@ -141,7 +136,8 @@ export default {
                     } else this.fav = false;
                 })
                 .catch(err => {
-                    console.log('err fav', err);
+                    // if theres an error, by default, mark it as not favourited
+                    this.fav = false;
                 });
         },
         unFav() {
@@ -162,7 +158,6 @@ export default {
             resourceService
                 .makeFav(this.data._id)
                 .then(() => {
-                    console.log('made fav');
                     this.fav = true; // should be true
                     // refresh fav status just to make sure
                     this.checkFav();
@@ -175,7 +170,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.data);
+        // console.log(this.data);
     },
     created() {
         this.getVoteCount();
