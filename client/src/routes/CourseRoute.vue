@@ -13,74 +13,26 @@
             </div>
         </section>
 
-        <section v-if="this.$route.query.week">
+        <section>
             <div class="container">
-                <div v-if="filteredResources.length == 0">
-                    No resources here : I dont like that this shows up no matter
-                    what. Look into possibly adding a delay or loading animation
-                    while when filtering the resources.
-                </div>
-                <div v-else>
-                    <ResourceTile
-                        v-for="resource in filteredResources"
-                        v-bind:key="resource.id"
-                        v-bind:data="resource"
-                        @clickedResource="launchResourceModal"
-                        @clickedUpvote="handleUpvote"
-                        @clickedDownvote="handleDownvote"
-                        @clickedFav="handleFav"
-                    />
-                </div>
+                <b-tabs vertical @change="changeWeek" expanded size="is-medium">
+                    <b-tab-item
+                        v-for="number in weeks"
+                        :key="number"
+                        :label="'Week ' + number"
+                    >
+                        <WeekLayout
+                            :weekNumber="number"
+                            :courseCode="courseCode"
+                        />
+                    </b-tab-item>
+                </b-tabs>
             </div>
         </section>
 
-        <section v-else>
-            <div class="container">
-                <div
-                    class="tile is-ancestor"
-                    v-for="index in 4"
-                    v-bind:key="index"
-                >
-                    <div
-                        class="tile is-parent"
-                        v-for="week in 4"
-                        v-bind:key="week"
-                    >
-                        <div class="tile is-child box">
-                            <router-link
-                                :to="{
-                                    path: `/${courseCode}?week=${(index - 1) *
-                                        4 +
-                                        week}`
-                                }"
-                            >
-                                <article>
-                                    <p class="title">
-                                        Week {{ (index - 1) * 4 + week }}
-                                    </p>
-                                    <p class="subtitle"></p>
-                                </article>
-                            </router-link>
-                        </div>
-                    </div>
-                </div>
-                <CreateButton v-bind:courseCode="courseCode" />
-            </div>
-        </section>
-        <section>
-            <b-modal
-                :active.sync="isModalActive"
-                has-modal-card
-                full-screen
-                :can-cancel="['escape', 'x', 'outside']"
-                scroll="keep"
-            >
-                <ResourceModal
-                    v-bind:props="resourceModalProps"
-                    @clickedClose="closeModal"
-                />
-            </b-modal>
-        </section>
+        <div class="container">
+            <CreateButton v-bind:courseCode="courseCode" />
+        </div>
     </div>
 </template>
 
@@ -94,82 +46,29 @@
  */
 import notificationMixin from '../mixins/notificationMixin';
 import CreateButton from '../components/CreateButton';
-import ResourceTile from '../components/ResourceTile';
-import ResourceModal from '../components/ResourceModal';
-import ResourceService from '../services/ResourceService';
-const resourceService = new ResourceService();
+import WeekLayout from '../components/WeekLayout';
 
 export default {
     name: 'CourseRoute',
-    components: { ResourceTile, ResourceModal, CreateButton },
+    components: { CreateButton, WeekLayout },
     data() {
         return {
             courseCode: '',
-            resources: [],
-            isModalActive: false,
-            resourceModalProps: {}
+            weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
         };
     },
     mixins: [notificationMixin],
     methods: {
-        launchResourceModal(resource) {
-            console.log(resource);
-            this.resourceModalProps['courseCode'] = this.courseCode;
-            this.resourceModalProps['resource'] = resource;
-            this.isModalActive = true;
-        },
-        closeModal() {
-            // close the modal
-            this.isModalActive = false;
-            // clear resource modal props
-            this.resourceModalProps = {};
-        },
-        handleUpvote() {
-            console.log('upvote');
-        },
-        handleDownvote() {
-            console.log('downvote');
-        },
-        handleFav() {
-            console.log('fav');
+        changeWeek(tabIndex) {
+            this.weekNumber = tabIndex + 1;
         }
     },
     created() {
-        console.log(this.$route);
-        this.courseCode = this.$route.params.courseCode;
-    },
-    mounted() {
-        console.log('mounted');
-        // get the resources for the entire course
-        resourceService
-            .getResources(this.courseCode)
-            .then(res => {
-                this.resources = res.data.resources;
-            })
-            .catch(err => {
-                console.log('err is', err);
-                this.resources = [];
-                this.toast(err, 'is-danger', 3000);
-            });
+        this.courseCode = this.$route.params.courseCode.toUpperCase();
     },
     watch: {
-        $route(to, from) {
-            console.log('Change from: ', from, 'to ', to);
-            this.courseCode = to.params.courseCode;
-        }
-    },
-    computed: {
-        filteredResources: function() {
-            console.log('computed');
-            if (this.$route.query.week == null) {
-                console.log('WEEK IS NULKL');
-                return [];
-            }
-            return this.resources.filter(resource => {
-                if (resource.week == this.$route.query.week) {
-                    return resource;
-                }
-            });
+        $route(to) {
+            this.courseCode = to.params.courseCode.toUpperCase();
         }
     }
 };
