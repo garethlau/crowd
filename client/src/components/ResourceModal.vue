@@ -147,7 +147,7 @@ export default {
                     console.log(err);
                     this.comments = [];
                 });
-        },
+        }
     },
     mounted() {
         this.courseCode = this.$route.params.courseCode;
