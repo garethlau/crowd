@@ -153,13 +153,11 @@ export default {
         logout() {
             authService
                 .logout()
-                .then(res => {
-                    console.log(res);
+                .then(() => {
                     this.user = null;
                     this.toast('Logged out.', 'is-success', 2000);
                 })
-                .catch(err => {
-                    console.log(err);
+                .catch(() => {
                     this.toast('Error logging out.', 'is-danger', 3000);
                 });
         },
@@ -171,8 +169,7 @@ export default {
                     // console.log(res);
                     this.user = user;
                 })
-                .catch(err => {
-                    console.log(err);
+                .catch(() => {
                     this.user = null;
                 });
         }

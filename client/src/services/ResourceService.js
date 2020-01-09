@@ -51,15 +51,13 @@ export default class ResourceService {
             axios
                 .get('/api/v1/user/current')
                 .then(res => {
-                    console.log('res in service', res);
                     if (res.data.user) {
                         resolve(res.data.user.favs);
                     } else {
                         reject('You must be logged in.');
                     }
                 })
-                .catch(err => {
-                    console.log('err in service', err);
+                .catch(() => {
                     reject('There was an error.');
                 });
         });

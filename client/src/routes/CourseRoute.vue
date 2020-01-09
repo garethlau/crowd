@@ -97,11 +97,9 @@ export default {
 
         // check if the user is requesting a sepcific resource by id
         if (this.$route.query.id) {
-            console.log(this.$route.query.id);
             resourceService
                 .getResources(null, null, this.$route.query.id)
                 .then(res => {
-                    console.log('res is', res);
                     this.resourceModalProps['resource'] = res.data.resource;
                     this.isModalActive = true;
                 })
@@ -114,7 +112,6 @@ export default {
         // add event listener for escape key press
         window.addEventListener('keydown', e => {
             if (e.key == 'Escape') {
-                console.log('escape pressed, closing');
                 this.closeModal();
             }
         });
@@ -125,7 +122,6 @@ export default {
         }
     },
     mounted() {
-        console.log('route', this.$route);
         // set the current tab
         this.currentTab = this.$route.query.week - 1 || 0;
     }

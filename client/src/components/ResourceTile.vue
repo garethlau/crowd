@@ -135,7 +135,7 @@ export default {
                         this.fav = true;
                     } else this.fav = false;
                 })
-                .catch(err => {
+                .catch(() => {
                     // if theres an error, by default, mark it as not favourited
                     this.fav = false;
                 });
