@@ -28,7 +28,13 @@
 
         <template slot="end">
             <b-navbar-item tag="div">
-                <div class="buttons" v-if="Object.entries(this.user).length === 0 && this.user.constructor === Object">
+                <div
+                    class="buttons"
+                    v-if="
+                        Object.entries(this.user).length === 0 &&
+                            this.user.constructor === Object
+                    "
+                >
                     <router-link :to="{ path: '/signup' }">
                         <a class="button is-primary">
                             <strong>Sign up</strong>
@@ -61,15 +67,9 @@
                             <b-dropdown-item custom aria-role="menuitem">
                                 Hello,
                                 <b>{{
-                                    this.user.firstName
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                        this.user.firstName.slice(1) +
+                                    capitalizeFirst(this.user.firstName) +
                                         ' ' +
-                                        this.user.lastName
-                                            .charAt(0)
-                                            .toUpperCase() +
-                                        this.user.lastName.slice(1)
+                                        capitalizeFirst(this.user.lastName)
                                 }}</b>
                             </b-dropdown-item>
                             <hr class="dropdown-divider" />
@@ -133,6 +133,7 @@
 
 <script>
 import notificationMixin from '../mixins/notificationMixin';
+import stringMixin from '../mixins/stringMixin';
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
 
@@ -145,7 +146,7 @@ export default {
             user: {}
         };
     },
-    mixins: [notificationMixin],
+    mixins: [notificationMixin, stringMixin],
     mounted() {
         authService
             .isAuth()

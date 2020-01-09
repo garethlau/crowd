@@ -1,5 +1,5 @@
 <template>
-    <div :style="indent" class="container columns">
+    <div :style="indent" class="container columns is-mobile">
         <div class="column is-1 votes-container">
             <div v-on:click="upvote" class="clickable">
                 <b-icon pack="far" icon="caret-square-up"> </b-icon>
@@ -159,6 +159,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '../styles/themes/western.scss';
+@import '../styles/mixins';
 
 .uploaded-by {
     display: inline;
@@ -168,17 +169,24 @@ export default {
     border-color: $primary;
     margin-top: 20px;
     margin-bottom: 20px;
-    padding-left: 10px;
+    @include sm {
+        padding-left: 5px;
+    }
+    @include md {
+        padding-left: 10px;
+    }
+
 }
 .replyIcon {
     margin-right: 5px;
 }
 .votes-container {
     text-align: center;
+    
 }
 .is-1 {
-    width: 25px;
     padding: 0px;
     padding-top: 12px;
+    width: 25px !important;
 }
 </style>

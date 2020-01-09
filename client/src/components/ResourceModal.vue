@@ -55,7 +55,7 @@
         </section>
 
         <section>
-            <div class="container" v-if="showComments">
+            <div class="container comments" v-if="showComments">
                 <div>
                     <CommentTree
                         v-for="comment in this.comments"
@@ -162,10 +162,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/mixins';
 .modal {
     background-color: white;
 }
 .scrollable {
     overflow-y: scroll;
+}
+.comments {
+    @include sm {
+        padding-left: 15px;
+    }
+    @include md {
+        padding-left: 20px;
+    }
 }
 </style>

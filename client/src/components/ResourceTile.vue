@@ -1,6 +1,6 @@
 <template>
     <div class="border">
-        <div class="columns">
+        <div class="columns is-mobile">
             <div class="column is-1 vote-container">
                 <div v-on:click="upvote" class="clickable">
                     <b-icon pack="far" icon="caret-square-up"> </b-icon>
