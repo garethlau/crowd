@@ -67,7 +67,6 @@ export default class AuthService {
             axios
                 .post(url, data, config)
                 .then(res => {
-                    console.log('res in authservice.login', res);
                     if (res.status == 200) {
                         // logged in
                         resolve('Logged in.');
