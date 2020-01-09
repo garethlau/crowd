@@ -47,7 +47,7 @@
             <b-modal
                 :active.sync="isModalActive"
                 has-modal-card
-                can-cancel="[]"
+                :can-cancel="false"
                 full-screen
                 scroll="keep"
             >

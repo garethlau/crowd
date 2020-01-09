@@ -1,10 +1,11 @@
 <template>
     <div>
         <div>
-            <div v-if="resources.length == 0">
-                No resources here : I dont like that this shows up no matter
-                what. Look into possibly adding a delay or loading animation
-                while when filtering the resources.
+            <div v-if="resources == null">
+                Loading
+            </div>
+            <div v-else-if="resources.length == 0">
+                No resoures
             </div>
             <div v-else>
                 <ResourceTile
@@ -21,7 +22,7 @@
             <b-modal
                 :active.sync="isModalActive"
                 has-modal-card
-                can-cancel="[]"
+                :can-cancel="false"
                 full-screen
                 scroll="keep"
             >
