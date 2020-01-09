@@ -28,7 +28,7 @@
 
         <template slot="end">
             <b-navbar-item tag="div">
-                <div class="buttons" v-if="!this.user">
+                <div class="buttons" v-if="Object.entries(this.user).length === 0 && this.user.constructor === Object">
                     <router-link :to="{ path: '/signup' }">
                         <a class="button is-primary">
                             <strong>Sign up</strong>
