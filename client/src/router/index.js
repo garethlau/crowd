@@ -12,15 +12,13 @@ import AuthService from '../services/AuthService';
 const authService = new AuthService();
 
 Vue.use(Router);
-import { store } from '../store';
 
 const isLoggedIn = (to, from, next) => {
     const redirectUrl = `/login?redirect=${to.path}`;
     authService
         .isAuth()
-        .then(user => {
-            console.log(user);
-            next(redirectUrl);
+        .then(() => {
+            next();
             return;
         })
         .catch(() => {
@@ -29,11 +27,15 @@ const isLoggedIn = (to, from, next) => {
 };
 
 const isNotLoggedIn = (to, from, next) => {
-    if (store.state.user == null) {
-        next();
-        return;
-    }
-    next(from);
+    authService
+        .isAuth()
+        .then(() => {
+            next(from);
+            return;
+        })
+        .catch(() => {
+            next();
+        });
 };
 
 export default new Router({
@@ -54,11 +56,6 @@ export default new Router({
             name: 'Login',
             component: LoginRoute,
             beforeEnter: isNotLoggedIn
-        },
-        {
-            path: '/login',
-            name: 'Login',
-            component: LoginRoute
         },
         {
             path: '/resource/create',
