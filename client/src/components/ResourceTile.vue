@@ -6,7 +6,7 @@
                     <b-icon pack="far" icon="caret-square-up"> </b-icon>
                 </div>
                 <div>
-                    0
+                    {{ this.count }}
                 </div>
                 <div v-on:click="downvote" class="clickable">
                     <b-icon pack="far" icon="caret-square-down"> </b-icon>
@@ -80,27 +80,55 @@
 </template>
 
 <script>
+import notificationMixin from '../mixins/notificationMixin';
 import stringMixin from '../mixins/stringMixin';
+import ResourceService from '../services/ResourceService';
+const resourceService = new ResourceService();
+
 export default {
     name: 'ResourceTile',
     props: ['data'],
-    mixins: [stringMixin],
+    mixins: [stringMixin, notificationMixin],
     data() {
         return {
-            favourite: false
+            favourite: false,
+            count: 0
         };
     },
     methods: {
-        upvote: function() {
+        upvote() {
             console.log('upvote resource', this.data._id);
-            // console.log('Upvote');
+            resourceService
+                .upvote(this.data._id)
+                .then(() => {
+                    // refresh vote count
+                    this.getVoteCount();
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger', 3000);
+                });
         },
-        downvote: function() {
+        downvote() {
             console.log('downvote resource', this.data._id);
+            resourceService
+                .downvote(this.data._id)
+                .then(() => {
+                    // refresh vote count
+                    this.getVoteCount();
+                })
+                .catch(err => {
+                    this.toast(err, 'is-danger', 3000);
+                });
         },
-        launchResourceModal: function() {
+        launchResourceModal() {
             // console.log('launch resource modal');
             this.$emit('clickedResource', this.data);
+        },
+        getVoteCount() {
+            resourceService.getVotes(this.data._id).then(count => {
+                console.log('getting vote count', count);
+                this.count = count;
+            });
         },
         fav: function() {
             console.log('fav resource', this.data._id);
@@ -108,6 +136,9 @@ export default {
     },
     mounted() {
         console.log(this.data);
+    },
+    created() {
+        this.getVoteCount();
     },
     computed: {
         uploadedDate() {
