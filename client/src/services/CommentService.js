@@ -30,7 +30,11 @@ const vote = (commentId, isUpvote) => {
                     // Server didn't get an ID
                     reject('There was an error.');
                 } else if (err.response.status == 401) {
-                    reject('You must be logged in to upvote.');
+                    if (isUpvote) {
+                        reject('You must be logged in to upvote.');
+                    } else {
+                        reject('You must be logged in to downvote.');
+                    }
                 }
                 // catch all other status codes and reject
                 reject('THere was an error.');
