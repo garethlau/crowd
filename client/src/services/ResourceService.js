@@ -1,7 +1,89 @@
 import axios from 'axios';
 const base = '/api/v1/resource/';
 
+const vote = (resourceId, type) => {
+    return new Promise((resolve, reject) => {
+        const url = base + 'voting';
+        const data = {
+            resourceId: resourceId,
+            type: type
+        };
+        let config = {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        // make post request
+        axios
+            .post(url, data, config)
+            .then(res => {
+                if (res.status == 200) {
+                    // everything went well
+                    resolve(res);
+                }
+                // catch all
+                reject('There was an error.');
+            })
+            .catch(err => {
+                if (err.response.status == 400) {
+                    reject('Missing information.');
+                } else if (err.response.status == 401) {
+                    if (type == 'up') {
+                        reject('You must be logged in to upvote.');
+                    } else {
+                        reject('You must be logged in to downvote.');
+                    }
+                }
+                // catch all other errors
+                else {
+                    reject('There was an error.');
+                }
+            });
+    });
+};
+
 export default class ResourceService {
+    /**
+     *
+     * @param {string} resourceId
+     */
+    upvote(resourceId) {
+        return vote(resourceId, 'up');
+    }
+
+    /**
+     *
+     * @param {string} resourceId
+     */
+    downvote(resourceId) {
+        return vote(resourceId, 'dn');
+    }
+
+    getVotes(resourceId) {
+        return new Promise((resolve, reject) => {
+            const url = base + 'voting';
+            const params = {
+                resourceId: resourceId
+            };
+            axios
+                .get(url, { params: params })
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data.count);
+                    }
+                    // catch all others
+                    reject('There was an error.');
+                })
+                .catch(err => {
+                    if (err.response.status == 500) {
+                        reject('There was an error.');
+                    }
+                    reject('There was an error.');
+                });
+        });
+    }
+
     newResource(data) {
         return new Promise((resolve, reject) => {
             let config = {
