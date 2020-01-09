@@ -106,10 +106,13 @@ export default class AuthService {
             axios
                 .get('/api/v1/user/current')
                 .then(res => {
-                    resolve(res);
+                    if (res.data.user) {
+                        resolve(res.data.user);
+                    }
+                    reject('Not logged in.');
                 })
-                .catch(err => {
-                    reject(err);
+                .catch(() => {
+                    reject('There was an error.');
                 });
         });
     }

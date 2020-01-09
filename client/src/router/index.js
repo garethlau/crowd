@@ -18,16 +18,12 @@ const isLoggedIn = (to, from, next) => {
     const redirectUrl = `/login?redirect=${to.path}`;
     authService
         .isAuth()
-        .then(res => {
-            console.log(res);
-            if (!res.data.user) {
-                next(redirectUrl);
-            }
-            next();
+        .then(user => {
+            console.log(user);
+            next(redirectUrl);
             return;
         })
-        .catch(err => {
-            console.log(err);
+        .catch(() => {
             next(redirectUrl);
         });
 };
