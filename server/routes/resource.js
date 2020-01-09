@@ -3,26 +3,28 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Resource = mongoose.model("Resource");
 const Vote = mongoose.model("Vote");
-const keys = require("../config/keys");
 
 // get upvotes / downvotes for a resource
 router.get("/voting", (req, res) => {
   const resourceId = req.query.resourceId;
-  Vote.find({
-    parentId: resourceId
-  }, (err, documents) => {
-    if (err) {
-      return res.status(500).send();
+  Vote.find(
+    {
+      parentId: resourceId
+    },
+    (err, documents) => {
+      if (err) {
+        return res.status(500).send();
+      }
+      let count = 0;
+      if (documents.length != 0) {
+        count = documents.reduce((acc, curr) => {
+          return curr.isUpvote ? ++acc : --acc;
+        }, 0);
+      }
+      return res.status(200).send({ message: "Votes counted.", count: count });
     }
-    let count = 0;
-    if (documents.length != 0) {
-      count = documents.reduce((acc, curr) => {
-        return curr.isUpvote ? ++acc : --acc;
-      }, 0);
-    }
-    return res.status(200).send({message: "Votes counted.", count: count});
-  })
-})
+  );
+});
 
 // upvote / downvote a resource
 router.post("/voting", (req, res) => {
