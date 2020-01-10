@@ -29,17 +29,12 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons" v-if="this.user == null">
-                    <router-link :to="{ path: '/signup' }">
-                        <a class="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                    </router-link>
-
-                    <router-link :to="{ path: '/login' }">
-                        <a class="button is-light">
-                            Log in
-                        </a>
-                    </router-link>
+                    <b-button type="is-primary" @click="goSignup">
+                        Sign up
+                    </b-button>
+                    <b-button type="is-light" @click="goLogin">
+                        Log in
+                    </b-button>
                 </div>
                 <div class="buttons" v-else>
                     <div class="navbar-end">
@@ -150,6 +145,14 @@ export default {
         }
     },
     methods: {
+        goLogin() {
+            let current = this.$route.path;
+            let url = '/login?redirect=' + current;
+            this.$router.push(url);
+        },
+        goSignup() {
+            this.$router.push('/signup');
+        },
         logout() {
             authService
                 .logout()
