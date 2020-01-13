@@ -1,35 +1,34 @@
 <template>
-    <div class="container">
-        <div class="columns">
-            <div class="column">
-                <section>
-                    <b-field
-                        label="Email"
-                        :type="emailStatus"
-                        :message="emailMessage"
-                    >
-                        <b-input v-model="email"></b-input>
-                    </b-field>
-                    <b-field
-                        label="Password"
-                        :type="passwordStatus"
-                        :message="passwordMessage"
-                    >
-                        <b-input
-                            v-model="password"
-                            type="password"
-                            password-reveal
-                        ></b-input>
-                    </b-field>
-                </section>
-                <div class="buttons">
-                    <b-button type="is-primary" expanded v-on:click="login"
-                        >Login</b-button
-                    >
-                </div>
+    <div class="main-container">
+        <section class="side">
+            hi
+        </section>
+        <section class="main-login">
+            <div>
+                <b-field
+                    label="Email"
+                    :type="emailStatus"
+                    :message="emailMessage"
+                >
+                    <b-input v-model="email"></b-input>
+                </b-field>
+                <b-field
+                    label="Password"
+                    :type="passwordStatus"
+                    :message="passwordMessage"
+                >
+                    <b-input
+                        v-model="password"
+                        type="password"
+                        password-reveal
+                    ></b-input>
+                </b-field>
             </div>
-            <div class="column"></div>
-        </div>
+            <b-button type="is-primary" expanded v-on:click="login"
+                >Login</b-button
+            >
+        </section>
+    
     </div>
 </template>
 
@@ -81,3 +80,18 @@ export default {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+.main-container {
+    height: calc(100vh - 52px);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+.main-login {
+    width: 60%;
+}
+.side {
+    width: 40%;
+}
+</style>
