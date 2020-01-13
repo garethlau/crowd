@@ -8,7 +8,9 @@
                     <FavouritesList />
                 </b-tab-item>
 
-                <b-tab-item label="Classes"> </b-tab-item>
+                <b-tab-item label="Classes">
+                    <ClassList />
+                </b-tab-item>
 
                 <b-tab-item label="Comments"> </b-tab-item>
             </b-tabs>
@@ -18,10 +20,11 @@
 
 <script>
 import FavouritesList from '../components/profile/FavouritesList';
+import ClassList from '../components/profile/ClassList';
 
 export default {
     name: 'ProfileRoute',
-    components: { FavouritesList },
+    components: { FavouritesList, ClassList },
     data() {
         return {
             activeTab: 0
