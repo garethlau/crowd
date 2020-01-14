@@ -1,8 +1,5 @@
 <template>
     <div class="main-container">
-        <section class="side">
-            hi
-        </section>
         <section class="main-login">
             <div>
                 <b-field
@@ -24,11 +21,20 @@
                     ></b-input>
                 </b-field>
             </div>
-            <b-button type="is-primary" expanded v-on:click="login"
-                >Login</b-button
-            >
+            <div class="button-container">
+                <b-button
+                    class="login"
+                    type="is-primary"
+                    expanded
+                    v-on:click="login"
+                >
+                    Login
+                </b-button>
+                <router-link :to="{ path: '/password-reset' }">
+                    Forgot Password?
+                </router-link>
+            </div>
         </section>
-    
     </div>
 </template>
 
@@ -82,16 +88,61 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/global';
+@import '../styles/mixins';
+
 .main-container {
     height: calc(100vh - 52px);
-    display: flex;
-    flex-direction: row;
     overflow: hidden;
+    background: $main-brand;
+    background: linear-gradient(198deg, $main-brand 18%, $light-accent 97%);
 }
 .main-login {
-    width: 60%;
+    background-color: $white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52px;
+    bottom: 0;
+    margin: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    padding: 30px 50px 30px 50px;
+
+    @include sm {
+        width: 90%;
+        height: 55%;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include md {
+        width: 60%;
+        height: 55%;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include lg {
+        width: 50%;
+        height: 55%;
+        max-width: 700px;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include xl {
+        width: 40%;
+        height: 55%;
+        max-width: 700px;
+        top: 0;
+        border-radius: 15px;
+    }
 }
-.side {
-    width: 40%;
+.login {
+    margin-bottom: 10px;
+}
+.button-container {
+    margin-top: 15px;
+    text-align: center;
 }
 </style>

@@ -1,73 +1,71 @@
 <template>
-    <div class="container">
-        <div class="columns">
-            <div class="column">
-                <section>
-                    <b-field
-                        label="First Name"
-                        :type="firstNameStatus"
-                        :message="firstNameMessage"
-                    >
-                        <b-input v-model="firstName"></b-input>
-                    </b-field>
-                    <b-field
-                        label="Last Name"
-                        :type="lastNameStatus"
-                        :message="lastNameMessage"
-                    >
-                        <b-input v-model="lastName"></b-input>
-                    </b-field>
-                    <b-field label="Email" :type="emailStatus">
-                        <b-input v-model="email"></b-input>
-                    </b-field>
-                    <b-field label="Password">
-                        <b-input
-                            type="password"
-                            v-model="password"
-                            password-reveal
+    <div class="main-container">
+        <div class="form">
+            <section>
+                <div class="level">
+                    <div class="level-left">
+                        <b-field
+                            label="First Name"
+                            :type="firstNameStatus"
+                            :message="firstNameMessage"
                         >
-                        </b-input>
-                    </b-field>
-                </section>
-                <section>
-                    <b-field label="Enter some tags">
-                        <b-taginput
-                            v-model="classes"
-                            :data="filteredClasses"
-                            autocomplete
-                            :allow-new="allowNew"
-                            :open-on-focus="openOnFocus"
-                            field="user.first_name"
-                            icon="label"
-                            placeholder="Add a tag"
-                            @typing="getFilteredClasses"
+                            <b-input v-model="firstName"></b-input>
+                        </b-field>
+                    </div>
+                    <div class="level-right">
+                        <b-field
+                            label="Last Name"
+                            :type="lastNameStatus"
+                            :message="lastNameMessage"
                         >
-                            <template slot-scope="props">
-                                {{ props.option }}
-                            </template>
-                            <template slot="empty">
-                                There are no items
-                            </template>
-                        </b-taginput>
-                    </b-field>
-                </section>
-                <div class="buttons">
-                    <b-button
-                        type="is-primary"
-                        expanded
-                        v-on:click="createAccount"
-                        >Create Account</b-button
-                    >
+                            <b-input v-model="lastName"></b-input>
+                        </b-field>
+                    </div>
                 </div>
-            </div>
-            <div class="column">
-                <h1>img</h1>
+                <b-field label="Email" :type="emailStatus">
+                    <b-input v-model="email"></b-input>
+                </b-field>
+                <b-field label="Password">
+                    <b-input type="password" v-model="password" password-reveal>
+                    </b-input>
+                </b-field>
+            </section>
+
+            <div class="button-container">
+                <b-button type="is-primary" expanded v-on:click="createAccount"
+                    >Create Account</b-button
+                >
             </div>
         </div>
     </div>
 </template>
 
 <script>
+/*
+
+            <section>
+                <b-field label="Enter some tags">
+                    <b-taginput
+                        v-model="classes"
+                        :data="filteredClasses"
+                        autocomplete
+                        :allow-new="allowNew"
+                        :open-on-focus="openOnFocus"
+                        field="user.first_name"
+                        icon="label"
+                        placeholder="Add a tag"
+                        @typing="getFilteredClasses"
+                    >
+                        <template slot-scope="props">
+                            {{ props.option }}
+                        </template>
+                        <template slot="empty">
+                            There are no items
+                        </template>
+                    </b-taginput>
+                </b-field>
+            </section>
+*/
 const data = ['ES1036', 'AM1413', 'AM1411', 'ES1050'];
 import AuthService from '../services/AuthService';
 import notificationMixin from '../mixins/notificationMixin';
@@ -172,4 +170,60 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import '../styles/global';
+@import '../styles/mixins';
+
+.main-container {
+    height: calc(100vh - 52px);
+    overflow: hidden;
+    background: $main-brand;
+    background: linear-gradient(198deg, $main-brand 18%, $light-accent 97%);
+}
+.form {
+    
+
+    background-color: $white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52px;
+    bottom: 0;
+    margin: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    padding: 30px 50px;
+    @include sm {
+        width: 90%;
+        height: 60%;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include md {
+        width: 60%;
+        height: 60%;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include lg {
+        width: 50%;
+        height: 60%;
+        max-width: 700px;
+        top: 0;
+        border-radius: 15px;
+    }
+    @include xl {
+        width: 40%;
+        height: 60%;
+        max-width: 700px;
+        top: 0;
+        border-radius: 15px;
+    }
+}
+.button-container {
+    margin-top: 15px;
+    text-align: center;
+}
+</style>
