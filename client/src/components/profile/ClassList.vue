@@ -1,7 +1,9 @@
 <template>
     <div>
         <div v-for="course in courses" :key="course">
-            {{ course }}
+            <router-link :to="{ path: `/${course}` }">
+                {{ course }}
+            </router-link>
         </div>
     </div>
 </template>
