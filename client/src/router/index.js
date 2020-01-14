@@ -77,7 +77,8 @@ export default new Router({
         {
             path: '/profile',
             name: 'Profile',
-            component: ProfileRoute
+            component: ProfileRoute,
+            beforeEnter: isLoggedIn
         },
         {
             path: '/:courseCode',
