@@ -58,6 +58,11 @@ export default new Router({
             component: PasswordResetRoute
         },
         {
+            path: '/password-reset/:token',
+            name: 'PasswordReset',
+            component: PasswordResetRoute
+        },
+        {
             path: '/login',
             name: 'Login',
             component: LoginRoute,
