@@ -159,6 +159,10 @@ export default {
                 .then(() => {
                     this.user = null;
                     this.toast('Logged out.', 'is-success', 2000);
+                    // check if the use just logged out from a protected route
+                    if (this.$route.path == '/profile') {
+                        this.$router.push('/');
+                    }
                 })
                 .catch(() => {
                     this.toast('Error logging out.', 'is-danger', 3000);
