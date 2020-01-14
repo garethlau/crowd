@@ -158,8 +158,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/themes/western.scss';
 @import '../styles/mixins';
+@import '../styles/global';
 
 .uploaded-by {
     display: inline;
