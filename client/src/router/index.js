@@ -7,6 +7,7 @@ import LoginRoute from '@/routes/LoginRoute';
 import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';
+import PasswordResetRoute from '@/routes/PasswordResetRoute';
 
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
@@ -50,6 +51,11 @@ export default new Router({
             path: '/verify-email',
             name: 'VertifyEmail',
             component: EmailVerification
+        },
+        {
+            path: '/password-reset',
+            name: 'PasswordReset',
+            component: PasswordResetRoute
         },
         {
             path: '/login',
