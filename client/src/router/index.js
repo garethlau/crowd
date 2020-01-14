@@ -8,6 +8,7 @@ import CreateResourceRoute from '@/routes/CreateResourceRoute';
 import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';
 import PasswordResetRoute from '@/routes/PasswordResetRoute';
+import BrowseRoute from '@/routes/BrowseRoute';
 
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
@@ -41,6 +42,11 @@ const isNotLoggedIn = (to, from, next) => {
 
 export default new Router({
     routes: [
+        {
+            path: '/',
+            name: 'Browse',
+            component: BrowseRoute
+        },
         {
             path: '/signup',
             name: 'Signup',
