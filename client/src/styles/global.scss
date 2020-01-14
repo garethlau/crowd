@@ -1,5 +1,35 @@
-// applies to all components
-@import './themes/western.scss';
+@import '~bulma/sass/utilities/_all';
+
+// Set app colors
+$gray-nurse: #F2F5F3;
+$shakespeare: #62B8D6;
+$royal-blue: #465FE5;
+$kimberly: #82759E;
+$mirage: #1E1A30;
+$viridian: #48967e;
+$tussock: #c68646;
+$pomegranate: #f44336;
+
+// accessible by components
+$light-shade: $gray-nurse;
+$light-accent: $shakespeare;
+$main-brand: $royal-blue;
+$dark-accent: $kimberly;
+$dark-shade: $mirage;
+
+
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light-shade, $dark-shade),
+    "dark": ($dark-shade, $light-shade),
+    "primary": ($main-brand, $primary-invert),
+    "info": ($mirage, $info-invert),
+    "success": ($viridian, $success-invert),
+    "warning": ($tussock, $warning-invert),
+    "danger": ($pomegranate, $danger-invert),
+);
+
 .clickable {
     &:hover {
         cursor: pointer;
