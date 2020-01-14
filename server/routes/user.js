@@ -9,6 +9,9 @@ const mailjet = require("node-mailjet").connect(
   keys.mailjetKey,
   keys.mailjetSecret
 );
+const fs = require("fs");
+const path = require("path");
+const handleBars = require("handlebars");
 
 // remove resource from favourites
 router.delete("/fav", (req, res) => {
@@ -197,11 +200,21 @@ router.post("/reset-password", (req, res) => {
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 1 * 60 * 60 * 1000;
     user.save().then(savedUser => {
-      // send email
-      const tokenUrl =
-        "http://localhost:5000/api/v1/user/reset-password/" + token;
+      // load in html file
+      let passwordResetHtml = fs
+        .readFileSync(
+          path.resolve("../server/templates/PasswordResetRequest.html")
+        )
+        .toString();
+        
+      const tokenUrl = `http://localhost:8080/#/password-reset/${token}`;
+
+      const htmlContent = handleBars.compile(passwordResetHtml)({
+        name: savedUser.firstName,
+        url: tokenUrl
+      });
+
       // extract the token on client side and submit the token with the new password to the reset password with token endpoint.
-      const htmlContent = `Follow this link to reset your password: http://localhost:8080/#/password-reset/${token}`;
       const request = mailjet.post("send", { version: "v3.1" }).request({
         Messages: [
           {
@@ -211,8 +224,8 @@ router.post("/reset-password", (req, res) => {
             },
             To: [
               {
-                Email: email,
-                Name: user.firstName
+                Email: savedUser.email,
+                Name: savedUser.firstName
               }
             ],
             Subject: "Reset your passwod",
@@ -255,13 +268,13 @@ router.post("/reset-password/:token", (req, res) => {
     (err, user) => {
       if (err) {
         console.log(err);
-		res.status(500).send({ message: "There was an error" });
-		return;
+        res.status(500).send({ message: "There was an error" });
+        return;
       }
       if (!user) {
         console.log("No user or invalid token");
-		res.status(401).send({ message: "Invalid or expired token." });
-		return;
+        res.status(401).send({ message: "Invalid or expired token." });
+        return;
       } else {
         user.password = User().generateHash(newPassword);
         user.resetPasswordToken = "";
@@ -269,14 +282,14 @@ router.post("/reset-password/:token", (req, res) => {
         user
           .save()
           .then(savedUser => {
-			res.status(200).send({ message: "Password changed." });
-			return;
+            res.status(200).send({ message: "Password changed." });
+            return;
           })
           .catch(err => {
             res.status(500).send({
               message: "There was an error saving the user."
-			});
-			return;
+            });
+            return;
           });
       }
     }
