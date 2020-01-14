@@ -147,6 +147,9 @@ export default {
                     this.fav = false;
                     // refresh status
                     this.checkFav();
+
+                    // this event is used in the profile page
+                    this.$emit('clickedUnfav', this.data._id);
                 })
                 .catch(err => {
                     this.toast(err, 'is-danger');
