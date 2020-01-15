@@ -25,7 +25,6 @@
             </div>
         </section>
 
-        <div class="hr"></div>
         <section>
             <div class="course-list">
                 <div v-for="course in filteredCourses" :key="course.courseCode">
@@ -37,6 +36,12 @@
 </template>
 
 <script>
+
+/*
+Line break 
+<div class="hr"></div>
+
+*/
 export default {
     name: 'BrowseRoute',
     data() {
@@ -83,7 +88,6 @@ export default {
 <style lang="scss" scoped>
 @import '../styles/global';
 .course-list {
-    height: 100vh;
 }
 .search-container {
     width: 300px;
