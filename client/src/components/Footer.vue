@@ -53,5 +53,6 @@ export default {
 <style lang="scss" scoped>
 .footer {
     padding: 3rem 1.5rem;
+    margin-top: 50px;
 }
 </style>
