@@ -1,5 +1,5 @@
 <template>
-    <b-navbar shadow>
+    <b-navbar shadow v-if="['', ''].indexOf($route.name) < 0">
         <template slot="brand">
             <b-navbar-item tag="router-link" :to="{ path: '/' }">
                 <a class="button is-primary">
