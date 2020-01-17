@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer">
+    <footer v-if="['Login', 'Signup'].indexOf($route.name) < 0" class="footer">
         <div class="content">
             <div class="columns">
                 <div class="column is-four-fifths">
