@@ -1,8 +1,112 @@
 const express = require("express");
 const router = express.Router();
+
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
+const crypto = require("crypto");
+const path = require("path");
+
 const mongoose = require("mongoose");
 const Resource = mongoose.model("Resource");
 const Vote = mongoose.model("Vote");
+
+const keys = require("../config/keys");
+const url = keys.mongoURI;
+
+// create storage object
+const storage = new GridFsStorage({
+  url: url,
+  file: (req, file) => {
+    console.log("file in storage is", file);
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        // const filename = buf.toString("hex") + path.extname(file.originalname);
+        const filename = file.originalname;
+        const fileInfo = {
+          filename: filename,
+          bucketName: "uploads"
+        };
+        console.log("file is", file);
+        resolve(fileInfo);
+      });
+    });
+  }
+});
+
+// set multer storage engine
+const upload = multer({ storage });
+
+// upload files
+router.post(
+  "/file",
+  (req, res, next) => {
+    // check if the user is logged in
+    if (!req.user) {
+      return res.status(401).send({ message: "You must be logged in." });
+    } else {
+      return next();
+    }
+  },
+  // upload the file
+  upload.array("files"),
+  (req, res) => {
+    // get the ids for the files
+    console.log("File upload endpoint reached", req.files);
+    const uploadedFiles = req.files;
+    let fileIds = [];
+    uploadedFiles.forEach(file => {
+      fileIds.push({
+        filename: file.filename,
+        contentType: file.contentType,
+        id: file.id
+      });
+    });
+    const { courseCode, week, title } = req.body;
+    console.log(req.body);
+    if (!courseCode || !week || !title) {
+      return res.status(400).send({message: "Missing information."});
+    }
+    const content = {
+      data: fileIds,
+      type: "FILE"
+    };
+
+    // make a new resource object with the id of the file as the content
+    const resource = new Resource({
+      courseCode: courseCode.toUpperCase(),
+      week: week,
+      title: title,
+      interactions: {
+        upvotes: "0",
+        downvotes: "0",
+        favs: "0"
+      },
+      comments: [],
+      content: content,
+      author: {
+        id: req.user._id,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName
+      }
+    });
+    // save the resource
+    resource
+      .save()
+      .then(savedResource => {
+        console.log("saved resources are", savedResource);
+        return res.status(200).send({ message: "Files uploaded." });
+      })
+      .catch(err => {
+        console.log("There was an error", err);
+        return res
+          .status(500)
+          .send({ message: "There was an error.", err: err });
+      });
+  }
+);
 
 // get upvotes / downvotes for a resource
 router.get("/voting", (req, res) => {
