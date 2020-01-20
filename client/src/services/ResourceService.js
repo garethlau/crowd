@@ -159,16 +159,35 @@ export default class ResourceService {
         });
     }
 
-    newResource(data) {
+    newResource(type, title, courseCode, week, content) {
         return new Promise((resolve, reject) => {
-            const url = '/api/v1/content/create';
+            let resource = {
+                title: title,
+                courseCode: courseCode,
+                week: week,
+                content: {
+                    data: content,
+                    type: type
+                }
+            };
+            let data = {
+                resource
+            };
+            console.log(data);
+            const url = '/api/v1/resource';
             axios
                 .post(url, data, config)
                 .then(res => {
-                    resolve(res);
+                    if (res.status == 200) {
+                        resolve('Created');
+                    }
+                    reject('There was an error.');
                 })
                 .catch(err => {
-                    reject(err);
+                    if (err.response.status == 401) {
+                        reject('You must be logged in.');
+                    }
+                    reject('There was an error.');
                 });
         });
     }
@@ -209,6 +228,29 @@ export default class ResourceService {
                 });
         });
     }
+
+    downloadFile(fileId) {
+        return new Promise((resolve, reject) => {
+            if (!fileId) {
+                reject('Missing file id.');
+            }
+            let url = base + 'file/' + fileId;
+            console.log(url);
+            axios
+                .get(url, {
+                    responseType: 'blob'
+                })
+                .then(res => {
+                    console.log(res);
+                    resolve(res);
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
+        });
+    }
+
     /**
      *
      * @param {string} id uid for specific resource
