@@ -160,7 +160,7 @@ export default class ResourceService {
     }
 
     /**
-     * 
+     *
      * @param {string} type Content type
      * @param {string} title Title of the resource
      * @param {string} courseCode Course code
