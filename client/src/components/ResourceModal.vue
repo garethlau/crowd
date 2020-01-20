@@ -42,6 +42,16 @@
                     Text
                     {{ props.resource.content.data }}
                 </div>
+                <div v-else-if="props.resource.content.type == 'FILE'">
+                    FIEL
+                    <div
+                        v-for="data in props.resource.content.data"
+                        :key="data.id"
+                        @click="downloadFile(data.filename, data.id)"
+                    >
+                        {{ data.filename }}
+                    </div>
+                </div>
                 <div v-else class="subtitle">
                     No format???
                     {{ props.resource.content.data }}
@@ -115,7 +125,9 @@ import CommentTree from './CommentTree';
 import ComposeComment from './ComposeComment';
 import CommentService from '../services/CommentService';
 import VideoResource from './VideoResource';
+import ResourceService from '../services/ResourceService';
 const commentService = new CommentService();
+const resourceService = new ResourceService();
 
 export default {
     name: 'ResourceModal',
@@ -130,6 +142,54 @@ export default {
         };
     },
     methods: {
+        getMobileOperatingSystem() {
+            let userAgent =
+                navigator.userAgent || navigator.vendor || window.opera;
+            if (/windows phone/i.test(userAgent)) return 'Windows Phone';
+            if (/android/i.test(userAgent)) return 'Android';
+            if (/ipad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+                return 'iOS';
+            return 'Unknown';
+        },
+        saveFile(data, filename, filetype) {
+            let blobData = [data];
+            let blob = new Blob(blobData, { type: filetype });
+            let os = this.getMobileOperatingSystem();
+            if (os === 'iOS') {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    console.log(e);
+                    window.location.href = reader.result;
+                };
+                reader.readAsDataURL(blob);
+            } else {
+                let blobURL = window.URL.createObjectURL(blob);
+                let tempLink = document.createElement('a');
+                tempLink.style.display = 'none';
+                tempLink.href = blobURL;
+                tempLink.setAttribute('download', filename);
+                if (typeof tempLink.download === 'undefined') {
+                    tempLink.setAttribute('target', '_blank');
+                }
+
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+                window.URL.revokeObjectURL(blobURL);
+            }
+        },
+        downloadFile(filename, fileId) {
+            console.log('donwloading file with id', fileId);
+            resourceService
+                .downloadFile(fileId)
+                .then(res => {
+                    console.log(res);
+                    this.saveFile(res.data, filename, res.data.type);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
         toggleComments() {
             this.showComments = !this.showComments;
         },
