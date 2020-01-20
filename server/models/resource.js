@@ -5,7 +5,6 @@ const ResourceSchema = new Schema({
   courseCode: String,
   week: String,
   title: String,
-  datePosted: String,
   interactions: {
     upvotes: String,
     downvotes: String,
