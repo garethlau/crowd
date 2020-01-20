@@ -5,6 +5,12 @@ const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const crypto = require("crypto");
 const path = require("path");
+const Grid = require("gridfs-stream");
+eval(
+  `Grid.prototype.findOne = ${Grid.prototype.findOne
+    .toString()
+    .replace("nextObject", "next")}`
+);
 
 const mongoose = require("mongoose");
 const Resource = mongoose.model("Resource");
@@ -12,6 +18,14 @@ const Vote = mongoose.model("Vote");
 
 const keys = require("../config/keys");
 const url = keys.mongoURI;
+
+const conn = mongoose.connection;
+let gfs;
+
+conn.once("open", () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection("uploads");
+});
 
 // create storage object
 const storage = new GridFsStorage({
@@ -67,7 +81,7 @@ router.post(
     const { courseCode, week, title } = req.body;
     console.log(req.body);
     if (!courseCode || !week || !title) {
-      return res.status(400).send({message: "Missing information."});
+      return res.status(400).send({ message: "Missing information." });
     }
     const content = {
       data: fileIds,
@@ -107,6 +121,32 @@ router.post(
       });
   }
 );
+
+router.get("/file/:fileId", (req, res) => {
+  const fileId = req.params.fileId;
+  if (!fileId) {
+    return res.status(400).send({ message: "Missing information." });
+  }
+  gfs.findOne({ _id: fileId }, (err, file) => {
+    if (err) {
+      return res.status(500).send({ message: "There was an error." });
+    }
+    if (!file) {
+      return res.status(404).send({ message: "Did not find file." });
+    }
+    res.set("Content-Type", file.contentType);
+    res.set(
+      "Content-Disposition",
+      'attachment; filename="' + file.filename + '"'
+    );
+    const readStream = gfs.createReadStream(file.filename);
+    readStream.on("error", err => {
+      console.log("Readstream error", err);
+      res.end();
+    });
+    return readStream.pipe(res);
+  });
+});
 
 // get upvotes / downvotes for a resource
 router.get("/voting", (req, res) => {
