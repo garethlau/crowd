@@ -31,14 +31,14 @@
         </section>
         <section>
             <div class="container" :style="resourceContainer">
-                <div v-if="props.resource.content.type == 'video'">
+                <div v-if="props.resource.content.type == 'YOUTUBE'">
                     <VideoResource :data="props.resource.content.data" />
                 </div>
-                <div v-else-if="props.resource.content.type == 'link'">
+                <div v-else-if="props.resource.content.type == 'LINK'">
                     Link
                     {{ props.resource.content.data }}
                 </div>
-                <div v-else-if="props.resource.content.type == 'text'">
+                <div v-else-if="props.resource.content.type == 'TEXT'">
                     Text
                     {{ props.resource.content.data }}
                 </div>
