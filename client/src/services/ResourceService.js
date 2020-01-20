@@ -159,36 +159,78 @@ export default class ResourceService {
         });
     }
 
+    /**
+     * 
+     * @param {string} type Content type
+     * @param {string} title Title of the resource
+     * @param {string} courseCode Course code
+     * @param {string} week Week number of the resource
+     * @param {*} content Content to be added to the resource
+     */
     newResource(type, title, courseCode, week, content) {
         return new Promise((resolve, reject) => {
-            let resource = {
-                title: title,
-                courseCode: courseCode,
-                week: week,
-                content: {
-                    data: content,
-                    type: type
-                }
-            };
-            let data = {
-                resource
-            };
-            console.log(data);
-            const url = '/api/v1/resource';
-            axios
-                .post(url, data, config)
-                .then(res => {
-                    if (res.status == 200) {
-                        resolve('Created');
+            if (type == 'TEXT' || type == 'LINK' || type == 'YOUTUBE') {
+                let resource = {
+                    title: title,
+                    courseCode: courseCode,
+                    week: week,
+                    content: {
+                        data: content,
+                        type: type
                     }
-                    reject('There was an error.');
-                })
-                .catch(err => {
-                    if (err.response.status == 401) {
-                        reject('You must be logged in.');
-                    }
-                    reject('There was an error.');
+                };
+                let data = {
+                    resource
+                };
+                console.log(data);
+                const url = '/api/v1/resource';
+                axios
+                    .post(url, data, config)
+                    .then(res => {
+                        if (res.status == 200) {
+                            resolve('Resource created successfully.');
+                        }
+                        reject('There was an error.');
+                    })
+                    .catch(err => {
+                        if (err.response.status == 401) {
+                            reject('You must be logged in.');
+                        }
+                        reject('There was an error.');
+                    });
+            } else if (type == 'FILE') {
+                let formData = new FormData();
+                content.forEach(file => {
+                    formData.append('files', file);
                 });
+                formData.append('type', type);
+                formData.append('title', title);
+                formData.append('courseCode', courseCode);
+                formData.append('week', week);
+
+                let url = base + 'file/';
+                axios
+                    .post(url, formData, config)
+                    .then(res => {
+                        console.log(res);
+                        if (res.status == 200) {
+                            resolve(res.data.message);
+                        }
+                        reject('There was an error');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        if (err.response.status == 401) {
+                            reject('You must be logged in.');
+                        } else if (err.response.status == 400) {
+                            reject('Bad request. Maybe missing information.');
+                        }
+                        // catch all other errors
+                        reject('There was an error.');
+                    });
+            } else {
+                reject('Invalid type.');
+            }
         });
     }
     /**
