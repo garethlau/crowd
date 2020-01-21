@@ -24,7 +24,7 @@ let gfs;
 
 conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
+  // gfs.collection("uploads");
 });
 
 // create storage object
@@ -38,7 +38,7 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         // const filename = buf.toString("hex") + path.extname(file.originalname);
-        const filename = file.originalname;
+        const filename = file.originalname; // keep the original file name
         const fileInfo = {
           filename: filename,
           bucketName: "uploads"
@@ -322,7 +322,7 @@ router.post("/", (req, res) => {
     });
 });
 
-// delete a resource (course, week, id)
+// delete a resource (id)
 router.delete("/", (req, res) => {
   const resourceId = req.body.resourceId;
   if (!resourceId) {
@@ -347,9 +347,40 @@ router.delete("/", (req, res) => {
           .status(404)
           .send({ message: "Could not find the resource." });
       }
-      return res
-        .status(200)
-        .send({ message: "Resource successfully deleted." });
+      console.log(resource);
+      if (resource.content.type == "FILE") {
+        // delete attached files
+
+        console.log("delete attached files", resource.content.data);
+
+        let promises = resource.content.data.map(file => {
+          return new Promise((resolve, reject) => {
+            gfs.remove({ _id: file.id, root: 'uploads' }, err => {
+              if (err) {
+                reject("There was an error removing file " + file.id);
+              } else {
+                resolve("Removed file " + file.id);
+              }
+            });
+          });
+        });
+
+        Promise.all(promises)
+          .then(values => {
+            console.log("deleted files", values);
+            return res
+              .status(200)
+              .send({ message: "Resource and files deleted successfully." });
+          })
+          .catch(err => {
+            console.log("ther was an error deleting iles", err);
+            return res.status(500).send();
+          });
+      } else {
+        return res
+          .status(200)
+          .send({ message: "Resource successfully deleted." });
+      }
     }
   );
 });
