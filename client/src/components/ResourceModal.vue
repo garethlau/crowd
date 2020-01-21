@@ -18,50 +18,50 @@
                     <h2 class="subtitle">
                         Posted by
                         {{
-                            capitalizeFirst(props.resource.author.firstName) +
+                            capitalizeFirst(firstName) +
                                 ' ' +
-                                capitalizeFirst(props.resource.author.lastName)
+                                capitalizeFirst(lastName)
                         }}
                     </h2>
                     <h1 class="title">
-                        {{ props.resource.title }}
+                        {{ title }}
                     </h1>
                 </div>
             </div>
         </section>
         <section>
             <div class="container" :style="resourceContainer">
-                <div v-if="props.resource.content.type == 'YOUTUBE'">
-                    <VideoResource :data="props.resource.content.data" />
+                <div v-if="type == 'YOUTUBE'">
+                    <VideoResource :data="data" />
                 </div>
-                <div v-else-if="props.resource.content.type == 'LINK'">
+                <div v-else-if="type == 'LINK'">
                     Link
-                    {{ props.resource.content.data }}
+                    {{ data }}
                 </div>
-                <div v-else-if="props.resource.content.type == 'TEXT'">
+                <div v-else-if="type == 'TEXT'">
                     Text
-                    {{ props.resource.content.data }}
+                    {{ data }}
                 </div>
-                <div v-else-if="props.resource.content.type == 'FILE'">
+                <div v-else-if="type == 'FILE'">
                     FIEL
                     <div
-                        v-for="data in props.resource.content.data"
-                        :key="data.id"
-                        @click="downloadFile(data.filename, data.id)"
+                        v-for="file in data"
+                        :key="file.id"
+                        @click="downloadFile(file.filename, file.id)"
                     >
-                        {{ data.filename }}
+                        {{ file.filename }}
                     </div>
                 </div>
                 <div v-else class="subtitle">
                     No format???
-                    {{ props.resource.content.data }}
+                    {{ data }}
                 </div>
             </div>
         </section>
         <section>
             <div class="container">
                 <ComposeComment
-                    :resourceId="props.resource._id"
+                    :resourceId="id"
                     @commentAdded="refreshComments"
                 />
             </div>
@@ -131,7 +131,7 @@ const resourceService = new ResourceService();
 
 export default {
     name: 'ResourceModal',
-    props: ['props'],
+    props: ['title', 'firstName', 'lastName', 'type', 'createdAt', 'id', 'data'],
     mixins: [stringMixin],
     components: { CommentTree, ComposeComment, VideoResource },
     data() {
@@ -199,7 +199,7 @@ export default {
         },
         setComments() {
             commentService
-                .getComments(this.props.resource._id, null)
+                .getComments(this.id, null)
                 .then(res => {
                     this.comments = res.data.comments;
                 })
@@ -215,7 +215,7 @@ export default {
     },
     computed: {
         resourceContainer() {
-            if (this.props.resource.content.type == 'video') {
+            if (this.type == 'video') {
                 return 'min-height: 500px';
             }
             return 'min-height: 200px';

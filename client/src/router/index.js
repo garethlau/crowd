@@ -9,6 +9,8 @@ import ProfileRoute from '@/routes/ProfileRoute';
 import CourseRoute from '@/routes/CourseRoute';
 import PasswordResetRoute from '@/routes/PasswordResetRoute';
 import BrowseRoute from '@/routes/BrowseRoute';
+import CourseResourceRoute from '@/routes/CourseResourceRoute';
+
 
 import AuthService from '../services/AuthService';
 const authService = new AuthService();
@@ -90,6 +92,11 @@ export default new Router({
             path: '/:courseCode',
             name: 'CourseRoute',
             component: CourseRoute
+        },
+        {
+            path:'/test/:courseCode',
+            name: 'CourseResourceRoute',
+            component: CourseResourceRoute
         }
     ]
 });
