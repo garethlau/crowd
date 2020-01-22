@@ -24,7 +24,7 @@ let gfs;
 
 conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
-  // gfs.collection("uploads");
+  gfs.collection("uploads");
 });
 
 // create storage object
