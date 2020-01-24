@@ -160,12 +160,33 @@ router.get("/voting", (req, res) => {
         return res.status(500).send();
       }
       let count = 0;
+      let upvoted = false;
+      let downvoted = false;
+
       if (documents.length != 0) {
         count = documents.reduce((acc, curr) => {
+          if (req.user) {
+            // check if the current user has favourited this resource
+            console.log(curr);
+            if (curr.author.id == req.user._id && curr.isUpvote) {
+              upvoted = true;
+            }
+            else if (curr.author.id == req.user._id && !curr.isUpvote) {
+              downvoted = true;
+            }
+          }
           return curr.isUpvote ? ++acc : --acc;
         }, 0);
       }
-      return res.status(200).send({ message: "Votes counted.", count: count });
+
+      return res
+        .status(200)
+        .send({
+          message: "Got documents.",
+          count: count,
+          upvoted: upvoted,
+          downvoted: downvoted
+        });
     }
   );
 });
@@ -178,7 +199,7 @@ router.post("/voting", (req, res) => {
     return res.status(401).send({ message: "You must be logged in." });
   }
   const resourceId = req.body.resourceId;
-  const type = req.body.vote;
+  const type = req.body.type;
   if (!resourceId) {
     return res.status(400).send({ message: "Missing information." });
   }
@@ -212,13 +233,23 @@ router.post("/voting", (req, res) => {
             return res.status(500).send();
           });
       } else {
-        // user has already voted, change the vote
+        // user has already voted
         let vote = documents[0];
+        console.log("vote", vote, type);
         if (
           (vote.isUpvote && type == "up") ||
           (!vote.isUpvote && type == "dn")
         ) {
-          return res.status(200).send({ message: "Already voted." });
+          console.log("already voted", vote);
+          // remove the vote
+          Vote.findByIdAndDelete(vote._id, (err, doc) => {
+            if (err) {
+              return res.status(500).send({message: "There was an issue removing the vote."});
+            }
+            else {
+              return res.status(200).send({message: "Vote removed."});
+            }
+          })
         } else {
           // switch the vote
           vote.isUpvote = !vote.isUpvote;
@@ -226,7 +257,7 @@ router.post("/voting", (req, res) => {
           vote
             .save()
             .then(() => {
-              res.status(200).send({ messaeg: "Vote saved." });
+              res.status(200).send({ message: "Vote switched." });
             })
             .catch(err => {
               console.log(err);
@@ -355,7 +386,7 @@ router.delete("/", (req, res) => {
 
         let promises = resource.content.data.map(file => {
           return new Promise((resolve, reject) => {
-            gfs.remove({ _id: file.id, root: 'uploads' }, err => {
+            gfs.remove({ _id: file.id, root: "uploads" }, err => {
               if (err) {
                 reject("There was an error removing file " + file.id);
               } else {
