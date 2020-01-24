@@ -91,6 +91,14 @@ export default {
         };
     },
     mixins: [notificationMixin],
+    created() {
+        // add event listener for escape key press
+        window.addEventListener('keydown', e => {
+            if (e.key == 'Enter') {
+                this.createAccount();
+            }
+        });
+    },
     methods: {
         // get dropdown tags based on current user input
         getFilteredClasses(text) {
@@ -98,6 +106,7 @@ export default {
                 return option.toLowerCase().indexOf(text.toLowerCase()) >= 0;
             });
         },
+
         createAccount() {
             // check if the inputs are valid
             this.validateEmail();
@@ -181,8 +190,6 @@ export default {
     background: linear-gradient(198deg, $main-brand 18%, $light-accent 97%);
 }
 .form {
-    
-
     background-color: $white;
     position: absolute;
     left: 0;

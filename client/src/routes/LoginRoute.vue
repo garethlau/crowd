@@ -62,6 +62,14 @@ export default {
         console.log(this.$route);
         this.redirect = this.$route.query.redirect;
     },
+    created() {
+        // add event listener for escape key press
+        window.addEventListener('keydown', e => {
+            if (e.key == 'Enter') {
+                this.login();
+            }
+        });
+    },
     methods: {
         login() {
             let email = this.email.toLowerCase();
