@@ -145,7 +145,11 @@ export default class ResourceService {
                 .get(url, { params: params })
                 .then(res => {
                     if (res.status == 200) {
-                        resolve(res.data.count);
+                        resolve({
+                            count: res.data.count,
+                            upvoted: res.data.upvoted,
+                            downvoted: res.data.downvoted,
+                        });
                     }
                     // catch all others
                     reject('There was an error.');
