@@ -26,7 +26,6 @@
                                     class="button is-primary"
                                     slot="trigger"
                                 >
-                                    <span>Filters</span>
                                     <b-icon
                                         pack="fas"
                                         class="clickable"
@@ -34,16 +33,30 @@
                                         size="is-small"
                                     >
                                     </b-icon>
+                                    <span>Sort</span>
+                                    <b-icon
+                                        pack="fas"
+                                        class="clickable"
+                                        icon="caret-down"
+                                        size="is-small"
+                                    >
+                                    </b-icon>
                                 </button>
 
-                                <b-dropdown-item aria-role="listitem"
-                                    >Action</b-dropdown-item
+                                <b-dropdown-item
+                                    aria-role="listitem"
+                                    @click="sortBy('week-low-to-high')"
+                                    >Week (Low to High)</b-dropdown-item
                                 >
-                                <b-dropdown-item aria-role="listitem"
-                                    >Another action</b-dropdown-item
+                                <b-dropdown-item
+                                    aria-role="listitem"
+                                    @click="sortBy('week-high-to-low')"
+                                    >Week (High to Low)</b-dropdown-item
                                 >
-                                <b-dropdown-item aria-role="listitem"
-                                    >Something else</b-dropdown-item
+                                <b-dropdown-item
+                                    aria-role="listitem"
+                                    @click="sortBy('recent')"
+                                    >Recent</b-dropdown-item
                                 >
                             </b-dropdown>
                         </p>
@@ -53,10 +66,30 @@
                                 type="search"
                                 icon-pack="fas"
                                 icon="search"
+                                v-model="query"
+                                @input="search"
                             >
                             </b-input>
                         </b-field>
                     </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="container">
+                    <b-field grouped group-multiline>
+                        <div v-for="(filter, index) in filters" :key="index">
+                            <b-tag
+                                type="is-primary"
+                                attached
+                                aria-close-label="Close tag"
+                                closable
+                                @close="removeFilter(filter)"
+                            >
+                                {{ filter }}
+                            </b-tag>
+                        </div>
+                    </b-field>
                 </div>
             </section>
 
@@ -91,6 +124,7 @@
                             :type="resource.content.type"
                             :createdAt="resource.created_at"
                             :id="resource._id"
+                            :data="resource.content.data"
                             @clickedResource="launchModal"
                         />
                     </div>
@@ -132,22 +166,68 @@ export default {
     name: 'CourseResourceRoute',
     data() {
         return {
+            groundTruthResources: [],
             resources: [],
             resourceModalProps: {},
             isModalActive: false,
-            courseCode: ''
+            courseCode: '',
+            filters: ['Week', 'video'],
+            query: ''
         };
     },
     components: { ResourceModal, ResourceCard },
     methods: {
-        sortByWeek() {
-            let sorted = this.resources.sort((a, b) =>
-                a.week > b.week ? 1 : -1
-            );
-            this.resources = sorted;
+        search() {
+            let filtered = this.groundTruthResources.filter(resource => {
+                if (
+                    resource.title
+                        .toUpperCase()
+                        .includes(this.query.toUpperCase()) ||
+                    resource.content.data
+                        .toString()
+                        .toUpperCase()
+                        .includes(this.query.toUpperCase()) ||
+                    resource.week
+                        .toUpperCase()
+                        .includes(this.query.toUpperCase()) ||
+                    resource.content.type
+                        .toUpperCase()
+                        .includes(this.query.toUpperCase())
+                ) {
+                    return resource;
+                }
+            });
+            if (this.query == '') {
+                this.resources = this.groundTruthResources;
+            } else {
+                this.resources = filtered;
+            }
+        },
+        removeFilter(filter) {
+            const index = this.filters.indexOf(filter);
+            if (index > -1) {
+                this.filters.splice(index, 1);
+            }
+        },
+        sortBy(sortMethod) {
+            if (sortMethod == 'week-high-to-low') {
+                let sorted = this.groundTruthResources.sort((a, b) => {
+                    return Number(a.week) < Number(b.week) ? 1 : -1;
+                });
+                this.resources = sorted;
+            } else if (sortMethod == 'week-low-to-high') {
+                let sorted = this.groundTruthResources.sort((a, b) =>
+                    Number(a.week) > Number(b.week) ? 1 : -1
+                );
+                this.resources = sorted;
+            } else if (sortMethod == 'recent') {
+                let sorted = this.groundTruthResources.sort((a, b) => {
+                    return a.created_at < b.created_at ? 1 : -1;
+                });
+                this.resources = sorted;
+            }
         },
         launchModal(resourceData) {
-            console.log('opening modal for ', resourceData);
             this.resourceModalProps['courseCode'] = this.courseCode;
             this.resourceModalProps = {
                 title: resourceData.title,
@@ -192,12 +272,12 @@ export default {
             resourceService
                 .getResources(this.courseCode)
                 .then(res => {
-                    console.log('got resouces', res.data);
+                    this.groundTruthResources = res.data.resources;
                     this.resources = res.data.resources;
-                    this.sortByWeek();
+                    this.sortBy('week-low-to-high');
                 })
                 .catch(err => {
-                    console.log(err);
+                    this.toast(err, 'is-danger', 3000);
                 });
         }
 
